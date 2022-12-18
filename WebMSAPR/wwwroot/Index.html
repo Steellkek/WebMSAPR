@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Генетический алгоритм</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap, popper, jQuery and filesaver - for demo purpose only -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://raw.githack.com/eligrey/FileSaver.js/master/dist/FileSaver.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Cytoscape and fcose -->
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/layout-base/layout-base.js"></script>
+    <script src="https://unpkg.com/cose-base/cose-base.js"></script>
+    <script src="/js/cytoscape-fcose.js"></script>
+
+    <!-- CoLa for local comparison only -->
+    <!-- <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script> -->
+    <!-- <script src="cytoscape-cola.js"></script> -->
+
+    <script src="https://unpkg.com/cytoscape-layout-utilities/cytoscape-layout-utilities.js"></script>
+    <script src="https://unpkg.com/cytoscape-view-utilities/cytoscape-view-utilities.js"></script>
+    <script src="https://unpkg.com/cytoscape-graphml/cytoscape-graphml.js"></script>  <!-- graphml - for demo purpose only-->
+    <!-- <script src="https://raw.githack.com/iVis-at-Bilkent/cytoscape.js-layvo/unstable/cytoscape-layvo.js"></script> -->  <!-- For quality metrics -->
+    <!-- <script src="https://raw.githack.com/kinimesi/cytoscape-svg/master/cytoscape-svg.js"></script> --> <!-- For svg export -->
+    <script src="js/cytoscape-automove.js"></script>
+
+    <style>
+        
+        #cy {
+            color: #d3d3d3;
+            font: 12pt arial;
+            height: 900px;
+            border: 1px solid #444444;
+            background-color: #ffffff;
+        }
+        p{
+            margin-bottom: 1px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <button id="graph" onclick="graph()" >Загрузить граф</button>
+            <button id="gengraph" onclick="gengraph()">Запустить генетический алгоритм</button>
+            <button id="newgraph" onclick="newgraph()">Создать новый граф и разрез</button>
+            <button id="x">Создать новый граф и разрез</button>
+            <input id="number" type="number" aria-label="Введите кол-во вершин">
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-10" id="cy"></div>
+            <div class="col">
+                <div class="grid">
+                    <div class="g-col-4">
+                        <p>Количество особей в популяции:</p>
+                        <font color="#8a2be2"><p id="CountGenome"></p></font>
+                    </div>
+                    <div class="g-col-4">
+                        <p>Количество популяций:</p>
+                        <font color="#8a2be2"><p id="Iteration"></p></font>
+                    </div>
+                    <div class="g-col-4">
+                        <p>Шанс для кроссинговера:</p>
+                        <font color="#8a2be2"><p id="ChanseCrosover"></p></font>
+                    </div>
+                    <div class="g-col-4">
+                        <p>Шанс для мутации:</p>
+                        <font color="#8a2be2"><p id="ChanseMutation"></p></font>
+                    </div>
+                    <div class="g-col-4">
+                        <p>Шанс для инверсии:</p>
+                        <font color="#8a2be2"><p id="ChanseInversion"></p></font>
+                    </div>
+                    <div class="g-col-4">
+                        <p>Нужный разрез:</p>
+                        <font color="#8a2be2"><p id="NeedSplit"></p></font>
+                    </div>
+                    <div class="g-col-4">
+                        <p>Полученный разрез:</p>
+                        <font color="#8a2be2"><p id="Split"></p></font>
+                    </div>
+                    <div class="g-col-4">
+                        <p>ЦФ для разреза:</p>
+                        <font color="#8a2be2"><p id="CF"></p></font>
+                    </div>
+                    <div class="g-col-4">
+                        <p>Время для нахождения лучшего разреза:</p>
+                        <font color="#8a2be2"><p id=TimeBestGen></p></font>
+                    </div>
+                    <div class="g-col-4">
+                        <p>Время работы алгоритма:</p>
+                        <font color="#8a2be2"><p id=Time></p></font>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="js/graph.js"></script>
+</html>
