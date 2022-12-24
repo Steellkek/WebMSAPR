@@ -27,6 +27,8 @@
     <!-- <script src="https://raw.githack.com/iVis-at-Bilkent/cytoscape.js-layvo/unstable/cytoscape-layvo.js"></script> -->  <!-- For quality metrics -->
     <!-- <script src="https://raw.githack.com/kinimesi/cytoscape-svg/master/cytoscape-svg.js"></script> --> <!-- For svg export -->
     <script src="js/cytoscape-automove.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.js"></script>
+    <script src="js/cytoscape-edgehandles.js"></script>
 
     <style>
         
@@ -50,6 +52,9 @@
             <button id="gengraph" onclick="gengraph()">Запустить генетический алгоритм</button>
             <button id="newgraph" onclick="newgraph()">Создать новый граф и разрез</button>
             <button id="x">Создать новый граф и разрез</button>
+            <button id="start">Start on selected</button>
+            <button id="draw-on">Draw mode on</button>
+            <button id="draw-off">Draw mode off</button>
             <input id="number" type="number" aria-label="Введите кол-во вершин">
         </div>
     </div>

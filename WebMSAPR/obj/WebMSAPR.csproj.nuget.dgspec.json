@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\WebMSAPR.csproj": {}
+    "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\WebMSAPR.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\WebMSAPR.csproj": {
+    "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\WebMSAPR.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\WebMSAPR.csproj",
+        "projectUniqueName": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\WebMSAPR.csproj",
         "projectName": "WebMSAPR",
-        "projectPath": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\WebMSAPR.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\obj\\",
+        "projectPath": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\WebMSAPR.csproj",
+        "packagesPath": "C:\\Users\\alyam\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\alyam\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"

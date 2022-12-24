@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "zUCQRhcT0mXTUDNVWvZeJ688j6aojGpxhRxeIwHPLh0=",
+  "Hash": "cirABwS7yUslNLo58K+k2DwCf0atl1bxyKqFwjzFB5k=",
   "Source": "WebMSAPR",
   "BasePath": "_content/WebMSAPR",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "WebMSAPR\\wwwroot",
       "Source": "WebMSAPR",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\css\\bootstrap.min.css",
+      "Identity": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\css\\bootstrap.min.css",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "RelativePath": "css/bootstrap.min.css",
       "AssetKind": "All",
@@ -34,10 +34,10 @@
       "OriginalItemSpec": "wwwroot\\css\\bootstrap.min.css"
     },
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\img\\t.png",
+      "Identity": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\img\\t.png",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "RelativePath": "img/t.png",
       "AssetKind": "All",
@@ -51,10 +51,10 @@
       "OriginalItemSpec": "wwwroot\\img\\t.png"
     },
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\img\\x.png",
+      "Identity": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\img\\x.png",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "RelativePath": "img/x.png",
       "AssetKind": "All",
@@ -68,10 +68,10 @@
       "OriginalItemSpec": "wwwroot\\img\\x.png"
     },
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\img\\y.png",
+      "Identity": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\img\\y.png",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "RelativePath": "img/y.png",
       "AssetKind": "All",
@@ -85,10 +85,10 @@
       "OriginalItemSpec": "wwwroot\\img\\y.png"
     },
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\Index.html",
+      "Identity": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\Index.html",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "RelativePath": "Index.html",
       "AssetKind": "All",
@@ -102,10 +102,10 @@
       "OriginalItemSpec": "wwwroot\\Index.html"
     },
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\js\\cytoscape-automove.js",
+      "Identity": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\js\\cytoscape-automove.js",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "RelativePath": "js/cytoscape-automove.js",
       "AssetKind": "All",
@@ -119,10 +119,10 @@
       "OriginalItemSpec": "wwwroot\\js\\cytoscape-automove.js"
     },
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\js\\cytoscape-cise.js",
+      "Identity": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\js\\cytoscape-cise.js",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "RelativePath": "js/cytoscape-cise.js",
       "AssetKind": "All",
@@ -136,10 +136,10 @@
       "OriginalItemSpec": "wwwroot\\js\\cytoscape-cise.js"
     },
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\js\\cytoscape-fcose.js",
+      "Identity": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\js\\cytoscape-fcose.js",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "RelativePath": "js/cytoscape-fcose.js",
       "AssetKind": "All",
@@ -153,10 +153,10 @@
       "OriginalItemSpec": "wwwroot\\js\\cytoscape-fcose.js"
     },
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\js\\cytoscape.min.js",
+      "Identity": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\js\\cytoscape.min.js",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "RelativePath": "js/cytoscape.min.js",
       "AssetKind": "All",
@@ -170,10 +170,10 @@
       "OriginalItemSpec": "wwwroot\\js\\cytoscape.min.js"
     },
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\js\\graph.js",
+      "Identity": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\js\\graph.js",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\alyam\\RiderProjects\\WebMSAPR\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
       "RelativePath": "js/graph.js",
       "AssetKind": "All",
