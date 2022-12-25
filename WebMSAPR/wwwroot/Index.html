@@ -30,6 +30,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.js"></script>
     <script src="js/cytoscape-edgehandles.js"></script>
 
+    <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+    <script src="js/cytoscape-cola.js"></script>
+    <script src="js/cytoscape-cose-bilkent.js"></script>
+    <script src="js/cytoscape-euler.js"></script>
+
+
+
     <style>
         
         #cy {
@@ -51,11 +58,12 @@
             <button id="graph" onclick="graph()" >Загрузить граф</button>
             <button id="gengraph" onclick="gengraph()">Запустить генетический алгоритм</button>
             <button id="newgraph" onclick="newgraph()">Создать новый граф и разрез</button>
-            <button id="x">Создать новый граф и разрез</button>
-            <button id="start">Start on selected</button>
-            <button id="draw-on">Draw mode on</button>
-            <button id="draw-off">Draw mode off</button>
-            <input id="number" type="number" aria-label="Введите кол-во вершин">
+            <span id='inputs' style="display: none;">
+            <button id="start">Соединить элементы'</button>
+            <input id="source" type="number" placeholder="введите номер 1 элемента" style="width: 220px;">
+            <input id="target" type="number" placeholder="введите номер 2 элемента" style="width: 220px;">
+            <input id="number" type="number" placeholder="Введите кол-во соединений" style="width: 230px;">
+            </span>
         </div>
     </div>
     <div class="container">
@@ -107,6 +115,13 @@
             </div>
         </div>
     </div>
+    <div class="container">
+        <div class="row" id="inputss">
+            <p>Размеры элементов:</p>
+            <span></span>
+        </div>
+    </div>
+
 </body>
 <script type="text/javascript" src="js/graph.js"></script>
 </html>
