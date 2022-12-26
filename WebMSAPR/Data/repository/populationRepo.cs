@@ -109,7 +109,7 @@ public class populationRepo
         var rand = new Random();
         var y = new GenomeRepo();
         population.NextGener.Clear();
-        for (int i = 0; i < population.Genomes.Count; i=i+2)
+        for (int i = 0; i < population.Genomes.Count-1; i=i+2)
         {
             var newChance = rand.NextDouble();
             var point = rand.Next(0,population.Genomes[i].Modules.Sum(x=>x.Cnt));
@@ -130,6 +130,12 @@ public class populationRepo
                 population.NextGener.Add(new Genome());
                 population.NextGener[i + 1].Modules = population.Genomes[i+1].Modules;
             }
+        }
+
+        if (population.Genomes.Count%2==1)
+        {
+            population.NextGener.Add(new Genome());
+            population.NextGener[population.NextGener.Count-1].Modules = population.Genomes[population.NextGener.Count-1].Modules;
         }
         return population;
     }

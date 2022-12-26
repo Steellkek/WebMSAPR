@@ -23,7 +23,7 @@ public class RepoPCB
         }
     }
 
-    private List<Element> CreateElements(List<List<int>> sizes)
+    private List<Element> CreateElements(List<List<decimal>> sizes)
     {
         var elements = new List<Element>();
         for (int i = 0; i < sizes.Count; i++)

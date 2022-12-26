@@ -176,6 +176,39 @@ async function  gengraph(){
 
     }
 }
+
+async function x1() {
+    var nodes = cy.nodes();
+    var arrOfNodes = []
+    var arrOfSizes=[]
+    for (let i = 0; i < nodes.length; i++) {
+        arrOfNodes.push(nodes[i].data().id)
+        arrOfSizes.push([nodes[i].data().height/5,nodes[i].data().width/5])
+    }
+    var edges = cy.edges();
+    var matrix = new Array(arrOfNodes.length);
+    for (let i = 0; i < arrOfNodes.length; i++) {
+        matrix[i] = []
+    }
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix.length; j++) {
+            matrix[i].push('0')
+        }
+    }
+    for (let i = 0; i < edges.length; i++) {
+        var l = arrOfNodes.indexOf(edges[i].data().source)
+        var l1 = arrOfNodes.indexOf(edges[i].data().target)
+        matrix[l][l1] = String( edges[i].data().label);
+        matrix[l1][l] = String(edges[i].data().label);
+    }
+    var v= JSON.stringify({'Matrix':matrix, 'SizesElements':arrOfSizes})
+    debugger
+    const response = await fetch("/api/Graph/LoadMatrix", {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: v
+    });
+}
 function newgraph(){
     if (flagInput==0){
         document.getElementById('inputsEdge').style.display = 'block';
@@ -193,16 +226,20 @@ function newgraph(){
         return;
     }
 
+    var arrayOfElements =[]
     cy.zoom({                       // Zoom to the specified position
         level: 1
     });
 
     var j=1;
-    
     cy.on('tap', function( evt ){
         var tgt = evt.target || evt.cyTarget; // 3.x || 2.x
 
         if( tgt === cy ){
+       
+            
+
+            arrayOfElements.push(j)
             var rand = Math.floor(Math.random() * (el.length));
             cy.add({
                 group: 'nodes',
@@ -224,23 +261,23 @@ function newgraph(){
 
 
     cy.on('cxttap', 'node', function( evt ){
-        var tgt = evt.target || evt.cyTarget; // 3.x || 2.x
-        j-=1;
+        var tgt = evt.target || evt.cyTarget; 
+        console.log(tgt.data());
         tgt.remove();
     })
 
     cy.on('cxttap', 'edge', function( evt ){
-        var tgt = evt.target || evt.cyTarget; // 3.x || 2.x
+        var tgt = evt.target || evt.cyTarget; 
 
         tgt.remove();
     })
 
-    x=0;
+    var x=0;
     document.querySelector('#start').addEventListener('click', function() {
         try {
-            if ((document.getElementById('source').value!=0) &&
-                (document.getElementById('target').value!=0) && 
-                (document.getElementById('number').value!=0)) {
+            if ((document.getElementById('source').value>0) &&
+                (document.getElementById('target').value>0) && 
+                (document.getElementById('number').value>0)) {
                 cy.add([{
                     group: 'edges',
                     data: {
@@ -276,9 +313,9 @@ function newgraph(){
 
     document.querySelector('#SetSize').addEventListener('click', function() {
         try {
-            if ((document.getElementById('element').value !=='') &&
-                (document.getElementById('length').value !=='') &&
-                (document.getElementById('width').value !=='')) {
+            if ((document.getElementById('element').value >0) &&
+                (document.getElementById('length').value >0) &&
+                (document.getElementById('width').value >0)) {
                 var id=document.getElementById('element').value;
                 var length = document.getElementById('length').value==0?10:document.getElementById('length').value
                 var width = document.getElementById('width').value==0?10:document.getElementById('width').value

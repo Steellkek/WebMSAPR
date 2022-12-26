@@ -22,4 +22,19 @@ public class GraphController : Controller
         PCB Pcb = new RepoPCB().CreatePCB();
         return Task.FromResult<ActionResult<PCB>>(Pcb);
     }
+    
+    [HttpPost("LoadMatrix")]
+    public  Task<ActionResult<int>> LoadMatrix(MatrixAndSizes matrixAndSizes)
+    {
+        LocalFileRepo x = new LocalFileRepo();
+        x.WriteMatix(matrixAndSizes.Matrix, matrixAndSizes.SizesElements);
+        return Task.FromResult<ActionResult<int>>(1);
+    }
+    
+    public class MatrixAndSizes
+    {
+        public List<List<string>> Matrix;
+        public List<List<string>> SizesElements;
+
+    }
 }

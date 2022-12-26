@@ -9,7 +9,7 @@ public class GenAlgRepo
         PCB Pcb = new RepoPCB().CreatePCB();
         var x = new populationRepo();
         var y = new GenomeRepo();
-        var population =x.CreateFirstPopulation(100,Pcb);
+        var population =x.CreateFirstPopulation(3,Pcb);
         population = x.GeneticOpertors(population, 100);
         y.GetConnectionsInModules(population.BestGenome);
         y.GetConnectionsBetweenModules(population.BestGenome);
