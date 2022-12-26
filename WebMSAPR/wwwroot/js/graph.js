@@ -11,7 +11,7 @@ cy = cytoscape({
             'width': 'data(width)',
             'background-fit': 'cover',
             'border-color': '#000',
-            'border-width': 3,
+            'border-width': 0,
             'border-opacity': 0.5,
             'shape':'rectangle',
             'background-opacity': 0,
@@ -57,48 +57,13 @@ cy = cytoscape({
         .css({
             'background-image': '/img/processor.png',
         })
-        .selector('.eh-handle')
-        .css({
-            'background-color': 'red',
-            'width': 12,
-            'height': 12,
-            'shape': 'ellipse',
-            'overlay-opacity': 0,
-            'border-width': 12, // makes the handle easier to hit
-            'border-opacity': 0
-        })
-        .selector('.eh-hover')
-        .css({
-            'background-color': 'red'
-        })
-        .selector('.eh-source')
-        .css({
-            'border-width': 2,
-            'border-color': 'red'
-        })
-        .selector('.eh-target')
-        .css({
-            'border-width': 2,
-            'border-color': 'red'
-        })
-        .selector('.eh-preview, .eh-ghost-edge')
-        .css({
-            'background-color': 'red',
-            'line-color': 'red',
-            'target-arrow-color': 'red',
-            'source-arrow-color': 'red'
-        })
-        .selector('.eh-ghost-edge.eh-preview-active')
-        .css({
-            'opacity': 0
-        })
-    ,
 })
 
 var el = ['pcb','pcb2','chip','processor','pcb3','cpu']
 
 async function  graph(){
-    document.getElementById('inputs').style.display = 'none';
+    document.getElementById('inputsEdge').style.display = 'none';
+    document.getElementById('inputsSizes').style.display = 'none';
     flagInput=0;
     cy.off('tap')
     cy.off('cxttap')
@@ -112,12 +77,14 @@ async function  graph(){
         console.log(graph)
         for (let i = 0; i <graph.elements.length;i++){
             var rand = Math.floor(Math.random() * el.length);
+            var length=graph.elements[i].length==0?10:graph.elements[i].length;
+            var width = graph.elements[i].width==0?10:graph.elements[i].width;
             cy.add([{group: 'nodes',
                 data: {id: 'g' + (i+1),
                     id1:el[rand],
-                    label:'g' + (i+1)+' '+graph.elements[i].length+'×'+graph.elements[i].width,
-                    width:5*graph.elements[i].width,
-                    height: 5*graph.elements[i].length}}])
+                    label:'g' + (i+1)+' '+length+'×'+width,
+                    width:5*length,
+                    height: 5*width}}])
         }
         for (let i = 0; i <graph.connections.length;i++){
             cy.add([{group: 'edges',
@@ -135,7 +102,8 @@ async function  graph(){
 }
 
 async function  gengraph(){
-    document.getElementById('inputs').style.display = 'none';
+    document.getElementById('inputsEdge').style.display = 'none';
+    document.getElementById('inputsSizes').style.display = 'none';
     flagInput=0;
     cy.off('tap')
     cy.off('cxttap')
@@ -210,12 +178,14 @@ async function  gengraph(){
 }
 function newgraph(){
     if (flagInput==0){
-        document.getElementById('inputs').style.display = 'block';
+        document.getElementById('inputsEdge').style.display = 'block';
+        document.getElementById('inputsSizes').style.display = 'block';
         flagInput=1;
         cy.remove(cy.elements())
     }
     else{
-        document.getElementById('inputs').style.display = 'none';
+        document.getElementById('inputsEdge').style.display = 'none';
+        document.getElementById('inputsSizes').style.display = 'none';
         flagInput=0;
         cy.off('tap')
         cy.off('cxttap')
@@ -238,16 +208,16 @@ function newgraph(){
                 group: 'nodes',
                 data: { id: 'g' + j,
                     id1:el[rand],
-                    label:'g'+j,
+                    label:'g'+j+' 10×10',
                     width:50,
-                    height: 50},
+                    height: 50,
+                },
                 position: {
                     x: evt.position.x,
                     y: evt.position.y
                 }
             });
-            document.getElementById("inputss").innerHTML += "</span>Product # " + (j + 1) + " <br><input type='text'     name='ProductNumber[]'></span>";
-            
+           
         }
         j+=1;
     });
@@ -255,7 +225,7 @@ function newgraph(){
 
     cy.on('cxttap', 'node', function( evt ){
         var tgt = evt.target || evt.cyTarget; // 3.x || 2.x
-
+        j-=1;
         tgt.remove();
     })
 
@@ -304,8 +274,29 @@ function newgraph(){
         }        
     });
 
+    document.querySelector('#SetSize').addEventListener('click', function() {
+        try {
+            if ((document.getElementById('element').value !=='') &&
+                (document.getElementById('length').value !=='') &&
+                (document.getElementById('width').value !=='')) {
+                var id=document.getElementById('element').value;
+                var length = document.getElementById('length').value==0?10:document.getElementById('length').value
+                var width = document.getElementById('width').value==0?10:document.getElementById('width').value
+                cy.nodes(`[id="g${id}"]`).data('width',5*width)
+                cy.nodes(`[id="g${id}"]`).data('height',5*length)
+                cy.nodes(`[id="g${id}"]`).data('label','g' + id+' '+length+'×'+width)
+                console.log(cy.nodes(`[id="g${id}"]`))
+            } 
+            else {
+                alert("Вы ввели не число или пустоту!")
+            }
+        }
+        catch (ex){
+            alert("Такой вершины нет!")
+        }
 
-    console.log(cy)
+    });
+
         
 }
 

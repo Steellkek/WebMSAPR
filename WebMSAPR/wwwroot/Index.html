@@ -58,12 +58,19 @@
             <button id="graph" onclick="graph()" >Загрузить граф</button>
             <button id="gengraph" onclick="gengraph()">Запустить генетический алгоритм</button>
             <button id="newgraph" onclick="newgraph()">Создать новый граф и разрез</button>
-            <span id='inputs' style="display: none;">
-            <button id="start">Соединить элементы'</button>
-            <input id="source" type="number" placeholder="введите номер 1 элемента" style="width: 220px;">
-            <input id="target" type="number" placeholder="введите номер 2 элемента" style="width: 220px;">
-            <input id="number" type="number" placeholder="Введите кол-во соединений" style="width: 230px;">
+            <span id='inputsEdge' style="display: none;">
+                <button id="start">Соединить элементы</button>
+                <input id="source" type="number" placeholder="введите номер 1 элемента" style="width: 220px;">
+                <input id="target" type="number" placeholder="введите номер 2 элемента" style="width: 220px;">
+                <input id="number" type="number" placeholder="Введите кол-во соединений" style="width: 230px;">
             </span>
+            <span id='inputsSizes' style="display: none;">
+                <button id="SetSize">Изменить размер элемента</button>
+                <input id="element" type="number" placeholder="введите номер элемента" style="width: 205px;">
+                <input id="length" type="number" placeholder="введите длину" style="width: 150px;">
+                <input id="width" type="number" placeholder="Введите ширину" style="width: 150px;">
+            </span>
+            
         </div>
     </div>
     <div class="container">
@@ -115,12 +122,7 @@
             </div>
         </div>
     </div>
-    <div class="container">
-        <div class="row" id="inputss">
-            <p>Размеры элементов:</p>
-            <span></span>
-        </div>
-    </div>
+
 
 </body>
 <script type="text/javascript" src="js/graph.js"></script>

@@ -3,16 +3,16 @@
 public class Element
 {
     public int Number{ get; set; }
-    public int Squre { get; set; }
-    public int Width { get; set; }
-    public int Length { get; set; }
+    public double Squre { get; set; }
+    public double Width { get; set; }
+    public double Length { get; set; }
     internal List<Tuple<Element, int>> AdjElement { get; set; } = new();
 
     public Element(int N, int width, int length)
     {
         Number = N;
-        Squre = width * length;
-        Width = width;
-        Length = length;
+        Width = width==0?10:width;
+        Length = length==0?10:length;
+        Squre = Width * Length;
     }
 }
