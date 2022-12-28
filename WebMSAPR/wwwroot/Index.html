@@ -26,14 +26,11 @@
     <script src="https://unpkg.com/cytoscape-graphml/cytoscape-graphml.js"></script>  <!-- graphml - for demo purpose only-->
     <!-- <script src="https://raw.githack.com/iVis-at-Bilkent/cytoscape.js-layvo/unstable/cytoscape-layvo.js"></script> -->  <!-- For quality metrics -->
     <!-- <script src="https://raw.githack.com/kinimesi/cytoscape-svg/master/cytoscape-svg.js"></script> --> <!-- For svg export -->
-    <script src="js/cytoscape-automove.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.js"></script>
-    <script src="js/cytoscape-edgehandles.js"></script>
+
 
     <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
-    <script src="js/cytoscape-cola.js"></script>
-    <script src="js/cytoscape-cose-bilkent.js"></script>
-    <script src="js/cytoscape-euler.js"></script>
+
 
 
 
@@ -49,54 +46,63 @@
         p{
             margin-bottom: 1px;
         }
+        .counter
+        {
+            display: inline-block;
+            text-align: center;
+            border: 1px dashed grey;
+            margin: 10px 0;
+        }
+
+        .counter:hover
+        {
+            cursor: pointer;
+            background-color: #360581;
+        }
 
     </style>
 </head>
 <body>
     <div class="container">
         <div class="row">
-            <button id="graph" onclick="graph()" >Загрузить схему</button>
-            <button id="gengraph" onclick="gengraph()">Запустить генетический алгоритм</button>
-            <button id="newgraph" onclick="newgraph()">Создать новую схему и разрез</button>
+            <button id="PCB" onclick="PCB()" >Загрузить схему</button>
+            <button id="genPCB" onclick="genPCB()">Запустить генетический алгоритм</button>
+            <button id="newPCB" onclick="newPCB()">Создать новую схему и разрез</button>
             <span id='inputsEdge' style="display: none;">
                 <button id="start">Соединить элементы</button>
-                <input id="source" type="number" placeholder="введите номер 1 элемента" style="width: 220px;">
-                <input id="target" type="number" placeholder="введите номер 2 элемента" style="width: 220px;">
-                <input id="number" type="number" placeholder="Введите кол-во соединений" style="width: 230px;">
+                <input id="source" type="number" placeholder="введите номер 1 элемента" style="width: 220px;" min="0">
+                <input id="target" type="number" placeholder="введите номер 2 элемента" style="width: 220px;" min="0">
+                <input id="number" type="number" placeholder="Введите кол-во соединений" style="width: 230px;" min="0">
             </span>
             <span id='inputsSizes' style="display: none;">
                 <button id="SetSize">Изменить размер элемента</button>
-                <input id="element" type="number" placeholder="введите номер элемента" style="width: 205px;">
-                <input id="length" type="number" placeholder="введите длину" style="width: 150px;">
-                <input id="width" type="number" placeholder="Введите ширину" style="width: 150px;">
+                <input id="element" type="number" placeholder="введите номер элемента" style="width: 205px;" min="0">
+                <input id="length" type="number" placeholder="введите длину" style="width: 150px;" min="0">
+                <input id="width" type="number" placeholder="Введите ширину" style="width: 150px;" min="0">
             </span>
-            
         </div>
+        
     </div>
     <div class="container">
         <div class="row">
             <div class="col-10" id="cy"></div>
             <div class="col">
-                <div class="grid">
+                <div class="grid" id ="parameters">
                     <div class="g-col-4">
                         <p>Количество особей в популяции:</p>
-                        <font color="#8a2be2"><p id="CountGenome"></p></font>
+                        <input id="CountOfGenome" type="number" style="width: 100px;" min="0" >
                     </div>
                     <div class="g-col-4">
                         <p>Количество популяций:</p>
-                        <font color="#8a2be2"><p id="Iteration"></p></font>
+                        <input id="CountOfPopulation" type="number" style="width: 100px;" min="0">
                     </div>
                     <div class="g-col-4">
                         <p>Шанс для кроссинговера:</p>
-                        <font color="#8a2be2"><p id="ChanseCrosover"></p></font>
+                        <input id="ChanсeCrosover" type="number" style="width: 100px;" min="0">                        
                     </div>
                     <div class="g-col-4">
                         <p>Шанс для мутации:</p>
-                        <font color="#8a2be2"><p id="ChanseMutation"></p></font>
-                    </div>
-                    <div class="g-col-4">
-                        <p>Шанс для инверсии:</p>
-                        <font color="#8a2be2"><p id="ChanseInversion"></p></font>
+                        <input id="ChanсeMutation" type="number" style="width: 100px;" min="0">                        
                     </div>
                     <div class="g-col-4">
                         <p>Нужный разрез:</p>
@@ -110,20 +116,18 @@
                         <p>ЦФ для разреза:</p>
                         <font color="#8a2be2"><p id="CF"></p></font>
                     </div>
-                    <div class="g-col-4">
-                        <p>Время для нахождения лучшего разреза:</p>
-                        <font color="#8a2be2"><p id=TimeBestGen></p></font>
-                    </div>
-                    <div class="g-col-4">
-                        <p>Время работы алгоритма:</p>
-                        <font color="#8a2be2"><p id=Time></p></font>
-                    </div>
                 </div>
             </div>
         </div>
+        <form id="inputsModule" style="display: none;">
+            <div id="profile">
+            </div>
+            <div class="counter" onclick="addInput()">+</div>
+            <div class="counter" onclick="delInput()">-</div>
+        </form>
+        <button id="saveScheme"  style="display: none;" onclick="saveScheme()" >Сохранить Схему</button>
     </div>
-<button id="g" onclick="x1()" >п</button>
-
+   
 </body>
-<script type="text/javascript" src="js/graph.js"></script>
+<script type="text/javascript" src="js/PCB.js"></script>
 </html>

@@ -6,14 +6,23 @@ namespace WebApplication1.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class GraphController : Controller
+public class PCBController : Controller
 {
-    [HttpGet("genPCB")]
-    public Task<ActionResult<BestGenome>> genPCB()
+    [HttpPost("genPCB")]
+    public Task<ActionResult<Response<BestGenome>>> genPCB(ParametrsGenAlg parametrsGenAlg)
     {
-        var x = new GenAlgRepo();
-        var g = x.Go();
-        return Task.FromResult<ActionResult<BestGenome>>(g);
+        try
+        { 
+            var genAlgRepo = new GenAlgRepository();
+            var bestGenome = genAlgRepo.Go();
+            var response = new Response<BestGenome>() {entity = bestGenome, resultCode = 0};
+            return Task.FromResult<ActionResult<Response<BestGenome>>>(response);
+        }
+        catch (Exception e)
+        {
+            var response = new Response<BestGenome>() { Message = e.Message, resultCode = -1};
+            return Task.FromResult<ActionResult<Response<BestGenome>>>(response);
+        }
     }
 
     [HttpGet("PCB")]
@@ -27,7 +36,7 @@ public class GraphController : Controller
     public  Task<ActionResult<int>> LoadMatrix(MatrixAndSizes matrixAndSizes)
     {
         LocalFileRepo x = new LocalFileRepo();
-        x.WriteMatix(matrixAndSizes.Matrix, matrixAndSizes.SizesElements);
+        x.WriteMatix(matrixAndSizes.Matrix, matrixAndSizes.SizesElements,matrixAndSizes.CountElements,matrixAndSizes.SizeModule);
         return Task.FromResult<ActionResult<int>>(1);
     }
     
@@ -35,6 +44,15 @@ public class GraphController : Controller
     {
         public List<List<string>> Matrix;
         public List<List<string>> SizesElements;
+        public List<int> CountElements;
+        public List<string> SizeModule;
+    }
 
+    public class ParametrsGenAlg
+    {
+        public int CountOfGenome;
+        public int CountOfPopulation;
+        public double ChanсeCrosover;
+        public double ChanсeMutation;
     }
 }

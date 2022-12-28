@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "i0fezcahASuB9hwdXiKLFinz7XJSmYv3AXryhQDtiRQ=",
+  "Hash": "2pPP3yw8n7JXeIBiEPkr5WOOUPO5/NDQ5Ncn3YsrxTs=",
   "Source": "WebMSAPR",
   "BasePath": "_content/WebMSAPR",
   "Mode": "Default",
@@ -187,12 +187,12 @@
       "OriginalItemSpec": "wwwroot\\js\\cytoscape.min.js"
     },
     {
-      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\js\\graph.js",
+      "Identity": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\js\\PCB.js",
       "SourceId": "WebMSAPR",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\User\\RiderProjects\\WebApplication3\\WebMSAPR\\wwwroot\\",
       "BasePath": "_content/WebMSAPR",
-      "RelativePath": "js/graph.js",
+      "RelativePath": "js/PCB.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -201,7 +201,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\graph.js"
+      "OriginalItemSpec": "wwwroot\\js\\PCB.js"
     }
   ]
 }

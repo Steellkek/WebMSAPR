@@ -95,7 +95,7 @@ public class LocalFileRepo
             .ToList();
         return sizes;
     }
-    public void WriteMatix(List<List<string>> matrix, List<List<string>> listSizeElements)
+    public void WriteMatix(List<List<string>> matrix, List<List<string>> listSizeElements, List<int> listCountElement, List<string> listSizeModule)
     {
         
         string strMatrix = "";
@@ -140,17 +140,13 @@ public class LocalFileRepo
             }
         }
 
-
-
-        /*var split = "";
-        while (n!=0)
-        {
-            var random = ran.Next(1, n);
-            split += random + " ";
-            n -= random;
-        }
+        var split = string.Join(" ",listCountElement);
         var xNode = xDoc.SelectSingleNode("root/split");
-        xNode.InnerText = split;*/
+        xNode.InnerText = split;
+        xDoc.Save("Files/File.xml");
+        var sisezModule = string.Join(" ", listSizeModule);
+        xNode = xDoc.SelectSingleNode("root/sizeSplit");
+        xNode.InnerText = sisezModule;
         xDoc.Save("Files/File.xml");
     }
    

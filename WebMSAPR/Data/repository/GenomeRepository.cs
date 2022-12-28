@@ -2,7 +2,7 @@
 
 namespace WebMSAPR.repository;
 
-public class GenomeRepo
+public class GenomeRepository
 {
     public Genome CreateFirstGenome(PCB pcb)
     {
@@ -23,7 +23,7 @@ public class GenomeRepo
                 {
                     if (module.Elements.Contains(tuple.Item1) && !CheckInConnections(module.ConnectionsInModules,element,tuple.Item1,tuple.Item2))
                     {
-                        module.ConnectionsInModules.Add(new Connection<Element>(element,tuple.Item1,tuple.Item2));
+                        module.ConnectionsInModules.Add(new ConnectionElement(element,tuple.Item1,tuple.Item2));
                     }
                 }
             }
@@ -53,7 +53,7 @@ public class GenomeRepo
                                 genome.ConnectionsBeetwenModules.Where(x =>
                                         (x.Module1 == genome.Modules[i] || x.Module1 == genome.Modules[j]) &&
                                         (x.Module2 == genome.Modules[i] || x.Module2 == genome.Modules[j]))
-                                    .FirstOrDefault().Connections.Add(new Connection<Element>(element1,tuple.Item1,tuple.Item2));
+                                    .FirstOrDefault().Connections.Add(new ConnectionElement(element1,tuple.Item1,tuple.Item2));
                             }
                             else if (genome.ConnectionsBeetwenModules.Where(x=>
                                          (x.Module1 == genome.Modules[i] || x.Module1 == genome.Modules[j])&&
@@ -70,7 +70,7 @@ public class GenomeRepo
                                 genome.ConnectionsBeetwenModules.Where(x =>
                                         (x.Module1 == genome.Modules[i] || x.Module1 == genome.Modules[j]) &&
                                         (x.Module2 == genome.Modules[i] || x.Module2 == genome.Modules[j]))
-                                    .FirstOrDefault().Connections.Add(new Connection<Element>(element1,tuple.Item1,tuple.Item2));
+                                    .FirstOrDefault().Connections.Add(new ConnectionElement(element1,tuple.Item1,tuple.Item2));
                             }
                         }
                     }
@@ -80,7 +80,7 @@ public class GenomeRepo
         }
     }
 
-    public bool CheckInConnections(List<Connection<Element>> connections, Element element1, Element element2, int value)
+    public bool CheckInConnections(List<ConnectionElement> connections, Element element1, Element element2, int value)
     {
         foreach (var connection in connections)
         {

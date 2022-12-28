@@ -34,16 +34,16 @@ public class RepoPCB
         return elements;
     }
 
-    private List<Connection<Element>> CreateConnections(List<Element> elements, List<List<int>> matrix)
+    private List<ConnectionElement> CreateConnections(List<Element> elements, List<List<int>> matrix)
     {
-        List<Connection<Element>> connections = new List<Connection<Element>>();
+        List<ConnectionElement> connections = new List<ConnectionElement>();
         for (int i = 0; i < matrix.Count; i++)
         {
             for (int j = i+1; j < matrix.Count; j++)
             {
                 if (matrix[i][j]!=0)
                 {
-                    connections.Add(new Connection<Element>(elements[i],elements[j], matrix[i][j]));
+                    connections.Add(new ConnectionElement(elements[i],elements[j], matrix[i][j]));
                 }
             }
             

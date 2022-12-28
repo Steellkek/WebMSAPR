@@ -1,10 +1,10 @@
 ﻿namespace WebMSAPR.repository;
 
-public class populationRepo
+public class PopulationRepository
 {
     public Population CreateFirstPopulation(int k, PCB pcb)
     {
-        var genomeRepo = new GenomeRepo();
+        var genomeRepo = new GenomeRepository();
         Population population = new Population();
         for (int i = 0; i < k; i++)
         {
@@ -51,7 +51,7 @@ public class populationRepo
 
     public Population GeneticOpertors(Population population, int count)
     {
-        var g = new GenomeRepo();
+        var genomeRepo = new GenomeRepository();
         var bestGen = population.Genomes.OrderBy(x => x.Fitness).ToList()[0];
         population.BestGenome = new BestGenome() {Modules = bestGen.Modules,Fitness = bestGen.Fitness};
         population.BestGenome.ListBestGen.Add(population.BestGenome.Fitness);
@@ -62,12 +62,12 @@ public class populationRepo
             population=Crossingover(population,0.95);
             foreach (var genome in population.NextGener)
             {
-                genome.Fitness = g.DetermineFitnes(genome.Modules);
+                genome.Fitness = genomeRepo.DetermineFitnes(genome.Modules);
             }
             population = Mutation(population,0.1);
             foreach (var genome in population.Genomes)
             {
-                genome.Fitness = g.DetermineFitnes(genome.Modules);
+                genome.Fitness = genomeRepo.DetermineFitnes(genome.Modules);
             }
 
             population.Genomes = Otbor(population.Genomes, population.NextGener);
@@ -92,7 +92,7 @@ public class populationRepo
     public Population Mutation(Population population,double chance)
     {
         var rand = new Random();
-        var genomeRepo = new GenomeRepo();
+        var genomeRepo = new GenomeRepository();
         for (int i = 0; i < population.NextGener.Count; i ++)
         {
             var newChance = rand.NextDouble();
@@ -107,21 +107,20 @@ public class populationRepo
     public Population Crossingover(Population population,double chance)
     {
         var rand = new Random();
-        var y = new GenomeRepo();
+        var genomeRepo = new GenomeRepository();
         population.NextGener.Clear();
         for (int i = 0; i < population.Genomes.Count-1; i=i+2)
         {
             var newChance = rand.NextDouble();
             var point = rand.Next(0,population.Genomes[i].Modules.Sum(x=>x.Cnt));
-            if (chance>newChance&&!y.CheckEquality(population.Genomes[i],population.Genomes[i+1]))
+            if (chance>newChance&&!genomeRepo.CheckEquality(population.Genomes[i],population.Genomes[i+1]))
             {
-                var child1 = y.GetChild(population.Genomes[i], population.Genomes[i + 1], point);
-                var child2 = y.GetChild(population.Genomes[i+1], population.Genomes[i], point);
+                var child1 = genomeRepo.GetChild(population.Genomes[i], population.Genomes[i + 1], point);
+                var child2 = genomeRepo.GetChild(population.Genomes[i+1], population.Genomes[i], point);
                 population.NextGener.Add(new Genome());
                 population.NextGener[i].Modules = child1;
                 population.NextGener.Add(new Genome());
                 population.NextGener[i + 1].Modules = child2;
-                var x = 5;
             }
             else
             {
