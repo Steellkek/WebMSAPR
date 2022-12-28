@@ -1,12 +1,12 @@
 ﻿namespace WebMSAPR.repository;
 
-public class RepoPCB
+public class PCBRepository
 {
     public PCB CreatePCB()
     {
-        var lfRepo = new LocalFileRepo();
-        var matrix = lfRepo.ReadGraph();
-        var sizeElements = lfRepo.ReadSizeElements();
+        var localFileRepository = new LocalFileRepository();
+        var matrix = localFileRepository.ReadGraph();
+        var sizeElements = localFileRepository.ReadSizeElements();
         var pcb = new PCB();
         pcb.Elements = CreateElements(sizeElements);
         pcb.Connections = CreateConnections(pcb.Elements, matrix);

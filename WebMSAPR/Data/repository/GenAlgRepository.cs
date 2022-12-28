@@ -1,18 +1,18 @@
-﻿using System.Text.Json;
+﻿using WebApplication1.Controllers;
 
 namespace WebMSAPR.repository;
 
 public class GenAlgRepository
 {
-    public BestGenome Go()
+    public BestGenome Go(PCBController.ParametrsGenAlg parametrsGenAlg)
     {
-        PCB Pcb = new RepoPCB().CreatePCB();
-        var x = new PopulationRepository();
-        var y = new GenomeRepo();
-        var population =x.CreateFirstPopulation(3,Pcb);
-        population = x.GeneticOpertors(population, 100);
-        y.GetConnectionsInModules(population.BestGenome);
-        y.GetConnectionsBetweenModules(population.BestGenome);
+        PCB Pcb = new PCBRepository().CreatePCB();
+        var populationRepo = new PopulationRepository();
+        var genomeRepo = new GenomeRepository();
+        var population =populationRepo.CreateFirstPopulation(parametrsGenAlg.CountOfGenome,Pcb);
+        population = populationRepo.GeneticOpertors(population, parametrsGenAlg);
+        genomeRepo.GetConnectionsInModules(population.BestGenome);
+        genomeRepo.GetConnectionsBetweenModules(population.BestGenome);
         return population.BestGenome;
     }
 

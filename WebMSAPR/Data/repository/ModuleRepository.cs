@@ -1,12 +1,12 @@
 ﻿namespace WebMSAPR.repository;
 
-public class ModuleRepo
+public class ModuleRepository
 {
     public List<Module> CreateModules(PCB pcb)
     {
-        var x = new LocalFileRepo();
-        var split = x.ReadSplit();
-        var sizeSplit = x.ReadSizeModules();
+        var localFileRepo = new LocalFileRepository();
+        var split = localFileRepo.ReadSplit();
+        var sizeSplit = localFileRepo.ReadSizeModules();
         var modules = new List<Module>();
         for (int i = 0; i < split.Count; i++)
         {

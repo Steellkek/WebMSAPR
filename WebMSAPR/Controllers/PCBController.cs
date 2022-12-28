@@ -14,7 +14,7 @@ public class PCBController : Controller
         try
         { 
             var genAlgRepo = new GenAlgRepository();
-            var bestGenome = genAlgRepo.Go();
+            var bestGenome = genAlgRepo.Go(parametrsGenAlg);
             var response = new Response<BestGenome>() {entity = bestGenome, resultCode = 0};
             return Task.FromResult<ActionResult<Response<BestGenome>>>(response);
         }
@@ -26,18 +26,33 @@ public class PCBController : Controller
     }
 
     [HttpGet("PCB")]
-    public  Task<ActionResult<PCB>> PCB()
+    public  Task<ActionResult<Response<PCB>>> PCB()
     {
-        PCB Pcb = new RepoPCB().CreatePCB();
-        return Task.FromResult<ActionResult<PCB>>(Pcb);
+        try
+        {
+            PCB Pcb = new PCBRepository().CreatePCB();
+            var response = new Response<PCB>() {entity = Pcb, resultCode = 0};
+            return Task.FromResult<ActionResult<Response<PCB>>>(response);
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult<ActionResult<Response<PCB>>>(new Response<PCB>(){Message = e.Message,resultCode = -1});
+        }   
     }
     
     [HttpPost("LoadMatrix")]
-    public  Task<ActionResult<int>> LoadMatrix(MatrixAndSizes matrixAndSizes)
+    public  Task<ActionResult<BaseResponse>> LoadMatrix(MatrixAndSizes matrixAndSizes)
     {
-        LocalFileRepo x = new LocalFileRepo();
-        x.WriteMatix(matrixAndSizes.Matrix, matrixAndSizes.SizesElements,matrixAndSizes.CountElements,matrixAndSizes.SizeModule);
-        return Task.FromResult<ActionResult<int>>(1);
+        try
+        {
+            LocalFileRepository localFileRepository = new LocalFileRepository();
+            localFileRepository.WriteMatixSizes(matrixAndSizes.Matrix, matrixAndSizes.SizesElements,matrixAndSizes.CountElements,matrixAndSizes.SizeModule);
+            return Task.FromResult<ActionResult<BaseResponse>>(new BaseResponse());
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult<ActionResult<BaseResponse>>(new BaseResponse(){Message = e.Message,resultCode = -1});
+        }
     }
     
     public class MatrixAndSizes

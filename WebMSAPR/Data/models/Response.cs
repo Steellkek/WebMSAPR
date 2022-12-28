@@ -1,8 +1,6 @@
 ﻿namespace WebMSAPR;
 
-public class Response<T>
+public class Response<T>:BaseResponse
 {
     public T entity;
-    public string Message;
-    public int resultCode;
 }

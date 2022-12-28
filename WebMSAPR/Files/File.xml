@@ -45,13 +45,6 @@
 10 10
 </sizeElements>
   </graph>
-  <split>10 10</split>
-  <sizeSplit>1 1</sizeSplit>
-  <GenAlg>
-    <CountGenome>20</CountGenome>
-    <Iteration>200</Iteration>
-    <ChanseCrosover>0,95</ChanseCrosover>
-    <ChanseMutation>0,1</ChanseMutation>
-    <ChanseInversion>0,1</ChanseInversion>
-  </GenAlg>
+  <split>3 4 2 1 5 2 2 1</split>
+  <sizeSplit>0 0 0 0 0 0 0 0</sizeSplit>
 </root>

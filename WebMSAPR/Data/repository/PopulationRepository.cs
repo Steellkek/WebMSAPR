@@ -1,4 +1,6 @@
-﻿namespace WebMSAPR.repository;
+﻿using WebApplication1.Controllers;
+
+namespace WebMSAPR.repository;
 
 public class PopulationRepository
 {
@@ -15,7 +17,7 @@ public class PopulationRepository
     }
     
 
-    public List<Genome> GetNewParents(Population population)
+    private List<Genome> GetNewParents(Population population)
     {
         population.Genomes= population.Genomes.OrderBy(x => x.Fitness).ToList();
         Random ran = new Random();
@@ -49,22 +51,22 @@ public class PopulationRepository
         return Parents;
     }
 
-    public Population GeneticOpertors(Population population, int count)
+    public Population GeneticOpertors(Population population, PCBController.ParametrsGenAlg parametrsGenAlg)
     {
         var genomeRepo = new GenomeRepository();
         var bestGen = population.Genomes.OrderBy(x => x.Fitness).ToList()[0];
         population.BestGenome = new BestGenome() {Modules = bestGen.Modules,Fitness = bestGen.Fitness};
         population.BestGenome.ListBestGen.Add(population.BestGenome.Fitness);
         population.BestGenome.ListSumFitnes.Add(population.SumFitness);
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < parametrsGenAlg.CountOfPopulation; i++)
         {
             population.NextGener= GetNewParents(population);
-            population=Crossingover(population,0.95);
+            population=Crossingover(population,parametrsGenAlg.ChanсeCrosover);
             foreach (var genome in population.NextGener)
             {
                 genome.Fitness = genomeRepo.DetermineFitnes(genome.Modules);
             }
-            population = Mutation(population,0.1);
+            population = Mutation(population,parametrsGenAlg.ChanсeMutation);
             foreach (var genome in population.Genomes)
             {
                 genome.Fitness = genomeRepo.DetermineFitnes(genome.Modules);
@@ -83,13 +85,13 @@ public class PopulationRepository
         return population;
     }
 
-    public List<Genome> Otbor(List<Genome> genomes1, List<Genome> NextGener)
+    private List<Genome> Otbor(List<Genome> genomes1, List<Genome> NextGener)
     {
         var newList = genomes1.Concat(NextGener).OrderBy(x=>x.Fitness).Reverse().ToList();
         return newList.GetRange(0,genomes1.Count);
     }
 
-    public Population Mutation(Population population,double chance)
+    private Population Mutation(Population population,double chance)
     {
         var rand = new Random();
         var genomeRepo = new GenomeRepository();
@@ -104,7 +106,7 @@ public class PopulationRepository
         return population;
     }
 
-    public Population Crossingover(Population population,double chance)
+    private Population Crossingover(Population population,double chance)
     {
         var rand = new Random();
         var genomeRepo = new GenomeRepository();

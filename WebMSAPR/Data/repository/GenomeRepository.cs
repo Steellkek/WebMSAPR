@@ -6,7 +6,7 @@ public class GenomeRepository
 {
     public Genome CreateFirstGenome(PCB pcb)
     {
-        var moduleRepo = new ModuleRepo();
+        var moduleRepo = new ModuleRepository();
         var genome = new Genome();
         genome.Modules = moduleRepo.CreateModules(pcb);
         genome.Fitness = DetermineFitnes(genome.Modules);
@@ -42,11 +42,9 @@ public class GenomeRepository
                     {
                         {
                             if (!((genome.ConnectionsBeetwenModules.Select(x => x.Module1).Contains(genome.Modules[i]) ||
-                                  genome.ConnectionsBeetwenModules.Select(x => x.Module1)
-                                      .Contains(genome.Modules[j])) &&
+                                  genome.ConnectionsBeetwenModules.Select(x => x.Module1).Contains(genome.Modules[j])) &&
                                  (genome.ConnectionsBeetwenModules.Select(x => x.Module2).Contains(genome.Modules[i]) ||
-                                  genome.ConnectionsBeetwenModules.Select(x => x.Module2)
-                                      .Contains(genome.Modules[j]))) &&
+                                  genome.ConnectionsBeetwenModules.Select(x => x.Module2).Contains(genome.Modules[j]))) &&
                                  genome.Modules[j].Elements.Contains(tuple.Item1))
                             {
                                 genome.ConnectionsBeetwenModules.Add(new ConnectionsModule(){Module1 = genome.Modules[i],Module2 = genome.Modules[j],value = tuple.Item2});
@@ -80,7 +78,7 @@ public class GenomeRepository
         }
     }
 
-    public bool CheckInConnections(List<ConnectionElement> connections, Element element1, Element element2, int value)
+    private bool CheckInConnections(List<ConnectionElement> connections, Element element1, Element element2, int value)
     {
         foreach (var connection in connections)
         {
@@ -92,7 +90,7 @@ public class GenomeRepository
 
         return false;
     }
-    public List<Module> CopyListModule(List<Module> modules)
+    private List<Module> CopyListModule(List<Module> modules)
     {
         var copyModules = new List<Module>();
         foreach (var module in modules)
@@ -164,7 +162,7 @@ public class GenomeRepository
             if (child.Sum(x=>x.Elements.Count)!=genome1.Modules.Sum(x=>x.Cnt))
             {
                 list1 = GetElementsFromModule(genome1.Modules);
-                list2 = leftShufle(GetElementsFromModule(genome2.Modules));
+                list2 = LeftShufle(GetElementsFromModule(genome2.Modules));
             }
             else
             {
@@ -259,7 +257,7 @@ public class GenomeRepository
 
         return true;
     }
-    public List<Element> leftShufle(List<Element> elements)
+    public List<Element> LeftShufle(List<Element> elements)
     {
         var newElements = elements.GetRange(1, elements.Count-1);
         newElements.Add(elements[0]);
@@ -311,6 +309,11 @@ public class GenomeRepository
                     }
                 }
             }
+        }
+
+        if (F==0)
+        {
+            throw new Exception("Один из геномов имеет 0 связей между модулями");
         }
         return  K/F;
     }
