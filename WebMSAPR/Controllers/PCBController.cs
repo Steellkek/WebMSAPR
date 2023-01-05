@@ -9,19 +9,19 @@ namespace WebApplication1.Controllers;
 public class PCBController : Controller
 {
     [HttpPost("genPCB")]
-    public Task<ActionResult<Response<BestGenome>>> genPCB(ParametrsGenAlg parametrsGenAlg)
+    public Task<ActionResult<Response<Genome>>> genPCB(ParametrsGenAlg parametrsGenAlg)
     {
         try
         { 
             var genAlgRepo = new GenAlgRepository();
             var bestGenome = genAlgRepo.Go(parametrsGenAlg);
-            var response = new Response<BestGenome>() {entity = bestGenome, resultCode = 0};
-            return Task.FromResult<ActionResult<Response<BestGenome>>>(response);
+            var response = new Response<Genome>() {entity = bestGenome, resultCode = 0};
+            return Task.FromResult<ActionResult<Response<Genome>>>(response);
         }
         catch (Exception e)
         {
-            var response = new Response<BestGenome>() { Message = e.Message, resultCode = -1};
-            return Task.FromResult<ActionResult<Response<BestGenome>>>(response);
+            var response = new Response<Genome>() { Message = e.Message, resultCode = -1};
+            return Task.FromResult<ActionResult<Response<Genome>>>(response);
         }
     }
 

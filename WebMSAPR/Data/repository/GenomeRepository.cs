@@ -4,19 +4,43 @@ namespace WebMSAPR.repository;
 
 public class GenomeRepository
 {
+    private List<List<int>> MinPathToModule = new();
+    private List<List<int>> Matrix = new();
+    public GenomeRepository()
+    {
+        var localFileRepository = new LocalFileRepository();
+        var matrix = localFileRepository.ReadMatrixModule();
+        Matrix = matrix;
+        for (int i = 0; i < matrix.Count; i++)
+        {
+            var t = DijkstraAlgo(matrix, i, matrix.Count);
+            for (int j = i; j < t.Count; j++)
+            {
+                if (i != j)
+                {
+                    var k = MinPath1(j, i, t).AsEnumerable().Reverse().ToList();
+                    MinPathToModule.Add(k);
+                }
+            }
+        }
+    }
     public Genome CreateFirstGenome(PCB pcb)
     {
         var moduleRepo = new ModuleRepository();
         var genome = new Genome();
         genome.Modules = moduleRepo.CreateModules(pcb);
-        genome.Fitness = DetermineFitnes(genome.Modules);
+        GetConnectionsInModules(genome);
+        GetConnectionsBetweenModules(genome);
+        CreateConnectionsBetweenModules(genome);
+        genome.Fitness = DetermineFitnes(genome.ConnectionsBeetwenModules2);
         return genome;
     }
 
-    public void GetConnectionsInModules(BestGenome genome)
+    public void GetConnectionsInModules(Genome genome)
     {
         foreach (var module in genome.Modules)
         {
+            module.ConnectionsInModules.Clear();
             foreach (var element in module.Elements)
             {
                 foreach (var tuple in element.AdjElement)
@@ -27,52 +51,158 @@ public class GenomeRepository
                     }
                 }
             }
+
+            var b = 5;
         }
     }
-
-    public void GetConnectionsBetweenModules(BestGenome genome)
+    public List<int> MinPath1(int end, int start, List<int> paths)
     {
+        List<int> listOfpoints = new List<int>();
+        int tempp = new int();
+        tempp = end;
+        while (tempp != start)
+        {
+            listOfpoints.Add(tempp);
+            tempp = paths[tempp];
+        }
+        listOfpoints.Add(tempp);
+        return listOfpoints;
+    }
+
+    public void CreateConnectionsBetweenModules(Genome genome)
+    {
+        genome.ConnectionsBeetwenModules2.Clear();
+        List<ConnectionsModule> connections = new List<ConnectionsModule>();
+        for (int i = 0; i < Matrix.Count; i++)
+        {
+            for (int j = i+1; j < Matrix.Count; j++)
+            {
+                if (Matrix[i][j]!=0)
+                {
+                    connections.Add(new ConnectionsModule()
+                    {
+                        Module1 = genome.Modules.Where(x=>x.Number==i).FirstOrDefault(),
+                        Module2 = genome.Modules.Where(x=>x.Number==j).FirstOrDefault(),
+                    });
+                }
+            }
+            
+        }
+        genome.ConnectionsBeetwenModules2 = connections;
+        for (int i = 0; i < MinPathToModule.Count; i++)
+        {
+            var con2 =genome.ConnectionsBeetwenModules.Where(x => (x.Module1.Number == MinPathToModule[i].FirstOrDefault() &&
+                                                                   x.Module2.Number == MinPathToModule[i].LastOrDefault())||
+                                                                  (x.Module2.Number == MinPathToModule[i].FirstOrDefault() &&
+                                                                   x.Module1.Number == MinPathToModule[i].LastOrDefault())).FirstOrDefault();
+            for (int j = 0; j < MinPathToModule[i].Count-1; j++)
+            {
+                var con =genome.ConnectionsBeetwenModules2.Where(x => (x.Module1.Number == MinPathToModule[i][j] &&
+                                                                       x.Module2.Number == MinPathToModule[i][j+1])||
+                                                                      (x.Module2.Number == MinPathToModule[i][j] &&
+                                                                       x.Module1.Number == MinPathToModule[i][j+1])).FirstOrDefault();
+                
+                if (con2 != null)
+                {
+                    con.value += con2.value;
+                }
+            }
+            
+        }
+        
+    }
+    
+    private static int MinimumDistance(int[] distance, bool[] shortestPathTreeSet, int verticesCount)
+    {
+        int min = int.MaxValue;
+        int minIndex = 0;
+ 
+        for (int v = 0; v < verticesCount; ++v)
+        {
+            if (shortestPathTreeSet[v] == false && distance[v] <= min)
+            {
+                min = distance[v];
+                minIndex = v;
+            }
+        }
+ 
+        return minIndex;
+    }
+    
+ 
+    public static List<int> DijkstraAlgo(List<List<int>> graph, int source, int verticesCount)
+    {
+        int[] distance = new int[verticesCount];
+        bool[] shortestPathTreeSet = new bool[verticesCount];
+        List<int> x = new();
+        for (int i = 0; i < verticesCount; i++)
+        {
+            x.Add(source);
+        }
+
+        for (int i = 0; i < verticesCount; ++i)
+        {
+            distance[i] = int.MaxValue;
+            shortestPathTreeSet[i] = false;
+        }
+ 
+        distance[source] = 0;
+ 
+        for (int count = 0; count < verticesCount - 1; ++count)
+        {
+            int u = MinimumDistance(distance, shortestPathTreeSet, verticesCount);
+            shortestPathTreeSet[u] = true;
+            
+            for (int v = 0; v < verticesCount; ++v)
+            {
+                if (!shortestPathTreeSet[v] && Convert.ToBoolean(graph[u][v]) && distance[u] != int.MaxValue &&
+                    distance[u] + graph[u][v] < distance[v])
+                {
+                    distance[v] = distance[u] + graph[u][v];
+                    x[v] = u;
+                }
+            }
+        }
+
+        return x;
+    }
+
+    public void GetConnectionsBetweenModules(Genome genome)
+    {
+        genome.ConnectionsBeetwenModules.Clear();
         for (int i = 0; i < genome.Modules.Count; i++)
         {
-            for (int j = i+1; j < genome.Modules.Count; j++)
+            foreach (var element in genome.Modules[i].Elements)
             {
-                foreach (var element1 in genome.Modules[i].Elements)
+                foreach (var tuple in element.AdjElement)
                 {
-                    foreach (var tuple in element1.AdjElement)
+                    if (!genome.Modules[i].Elements.Contains(tuple.Item1))
                     {
+                        var module2 = genome.Modules.Where(x => x.Elements.Contains(tuple.Item1)).FirstOrDefault();
+                        if (!(genome.ConnectionsBeetwenModules.Where(x =>
+                                (x.Module1 == genome.Modules[i] || x.Module1 == module2) &&
+                                (x.Module2 == genome.Modules[i] || x.Module2 == module2)).ToList().Count > 0))
                         {
-                            if (!((genome.ConnectionsBeetwenModules.Select(x => x.Module1).Contains(genome.Modules[i]) ||
-                                  genome.ConnectionsBeetwenModules.Select(x => x.Module1).Contains(genome.Modules[j])) &&
-                                 (genome.ConnectionsBeetwenModules.Select(x => x.Module2).Contains(genome.Modules[i]) ||
-                                  genome.ConnectionsBeetwenModules.Select(x => x.Module2).Contains(genome.Modules[j]))) &&
-                                 genome.Modules[j].Elements.Contains(tuple.Item1))
-                            {
-                                genome.ConnectionsBeetwenModules.Add(new ConnectionsModule(){Module1 = genome.Modules[i],Module2 = genome.Modules[j],value = tuple.Item2});
-                                genome.ConnectionsBeetwenModules.Where(x =>
-                                        (x.Module1 == genome.Modules[i] || x.Module1 == genome.Modules[j]) &&
-                                        (x.Module2 == genome.Modules[i] || x.Module2 == genome.Modules[j]))
-                                    .FirstOrDefault().Connections.Add(new ConnectionElement(element1,tuple.Item1,tuple.Item2));
-                            }
-                            else if (genome.ConnectionsBeetwenModules.Where(x=>
-                                         (x.Module1 == genome.Modules[i] || x.Module1 == genome.Modules[j])&&
-                                         (x.Module2 == genome.Modules[i] || x.Module2 == genome.Modules[j])).ToList().Count>0 &&
-                                     CheckInConnections(genome.ConnectionsBeetwenModules.Where(x=>
-                                         (x.Module1 == genome.Modules[i] || x.Module1 == genome.Modules[j])&&
-                                         (x.Module2 == genome.Modules[i] || x.Module2 == genome.Modules[j])).FirstOrDefault().Connections,element1,tuple.Item1,tuple.Item2))
-                            {
-                                genome.ConnectionsBeetwenModules.Where(x =>
-                                        (x.Module1 == genome.Modules[i] || x.Module1 == genome.Modules[j]) &&
-                                        (x.Module2 == genome.Modules[i] || x.Module2 == genome.Modules[j]))
-                                    .FirstOrDefault()
-                                    .value += tuple.Item2;
-                                genome.ConnectionsBeetwenModules.Where(x =>
-                                        (x.Module1 == genome.Modules[i] || x.Module1 == genome.Modules[j]) &&
-                                        (x.Module2 == genome.Modules[i] || x.Module2 == genome.Modules[j]))
-                                    .FirstOrDefault().Connections.Add(new ConnectionElement(element1,tuple.Item1,tuple.Item2));
-                            }
+                            genome.ConnectionsBeetwenModules.Add(new ConnectionsModule(){Module1 = genome.Modules[i],
+                                Module2 = genome.Modules.Where(x => x.Elements.Contains(tuple.Item1)).FirstOrDefault(),
+                                value = tuple.Item2});
+                            genome.ConnectionsBeetwenModules.LastOrDefault().Connections.Add(new ConnectionElement(element,tuple.Item1,tuple.Item2));
+                        }
+                        else if (!CheckInConnections(genome.ConnectionsBeetwenModules.Where(x=>
+                                     (x.Module1 == genome.Modules[i] || x.Module1 == module2)&&
+                                     (x.Module2 == genome.Modules[i] || x.Module2 == module2)).FirstOrDefault().Connections,element,tuple.Item1,tuple.Item2))
+                        {
+                            genome.ConnectionsBeetwenModules.Where(x =>
+                                    (x.Module1 == genome.Modules[i] || x.Module1 == module2) &&
+                                    (x.Module2 == genome.Modules[i] || x.Module2 == module2))
+                                .FirstOrDefault()
+                                .value += tuple.Item2;
+                            genome.ConnectionsBeetwenModules.Where(x =>
+                                    (x.Module1 == genome.Modules[i] || x.Module1 == module2) &&
+                                    (x.Module2 == genome.Modules[i] || x.Module2 == module2))
+                                .FirstOrDefault().Connections.Add(new ConnectionElement(element,tuple.Item1,tuple.Item2));
                         }
                     }
-
                 }
             }
         }
@@ -289,9 +419,10 @@ public class GenomeRepository
 
         return list;
     }
-    public decimal DetermineFitnes(List<Module> modules)
+    public decimal DetermineFitnes(List<ConnectionsModule> connectionsModules)
     {
-        decimal F = 0;
+        return connectionsModules.Sum(x => x.value);
+        /*decimal F = 0;
         decimal K = 0;
         foreach (var module in modules)
         {
@@ -315,7 +446,7 @@ public class GenomeRepository
         {
             throw new Exception("Один из геномов имеет 0 связей между модулями");
         }
-        return  K/F;
+        return  K/F;*/
     }
 
 

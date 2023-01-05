@@ -35,11 +35,19 @@ public class LocalFileRepository
                     }
                 }
             }
+
+            foreach (var var in matrix)
+            {
+                if (var.Where(x=>x==0).Count()==var.Count)
+                {
+                    throw new Exception("Присутвует элемент у которого нет связей с другими");
+                }
+            }
             return matrix;
         }
         catch (Exception e)
         {
-            throw new Exception("Файл поврежден!");
+            throw new Exception("Файл поврежден: "+e.Message);
         }
     }
 
@@ -57,17 +65,9 @@ public class LocalFileRepository
                 // обходим все дочерние узлы элемента user
                 foreach (XmlNode childnode in xRoot.ChildNodes)
                 {
-                    if (childnode.Name=="n")
-                    {
-                        length = Int32.Parse(childnode.InnerText);
-                    }
 
                     if (childnode.Name=="sizeElements")
                     {
-                        var x = childnode.InnerText
-                            .Split(Array.Empty<string>(), StringSplitOptions.RemoveEmptyEntries)
-                            .Select((s, i) => new { N = int.Parse(s), I = i})
-                            .GroupBy(at => at.I/length, at => at.N, (k, g) => g.ToList());
                         sizes = childnode.InnerText
                             .Split(Array.Empty<string>(), StringSplitOptions.RemoveEmptyEntries)
                             .Select((s, i) => new { N = decimal.Parse(s.Replace(".",",")), I = i})
@@ -121,6 +121,33 @@ public class LocalFileRepository
         catch (Exception e)
         {
             throw new Exception("Файл поврежден!");
+        }
+    }
+
+    public List<List<int>> ReadMatrixModule()
+    {
+        try
+        {
+            List<List<int>> matrix = new();
+            int length=1;
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.Load(FileWay);
+            var xRoot = xDoc.SelectSingleNode("root/matrixModules");
+            var count = xRoot.InnerText.Trim().Where(x => (x == '\n')).Count()+1;
+            matrix = xRoot.InnerText
+                .Split(Array.Empty<string>(), StringSplitOptions.RemoveEmptyEntries)
+                .Select((s, i) => new { N = int.Parse(s), I = i})
+                .GroupBy(at => at.I/count, at => at.N, (k, g) => g.ToList())
+                .ToList();
+            if (matrix.Count!=count)
+            {
+                throw new Exception("Проверьте матрицу соединений модулей!");
+            }
+            return matrix;
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Файл поврежден: "+e.Message);
         }
     }
     public void WriteMatixSizes(List<List<string>> matrix, List<List<string>> listSizeElements, List<int> listCountElement, List<string> listSizeModule)

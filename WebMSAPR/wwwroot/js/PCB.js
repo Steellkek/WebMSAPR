@@ -33,7 +33,8 @@ cy = cytoscape({
             'height': 1,
             'width': 1,
             'background-opacity': 1,
-            'background-color': 'green'
+            'background-color': 'green',
+            'text-wrap':"wrap"
         })
         .selector('node[id1="chip"]')
         .css({
@@ -117,7 +118,7 @@ async function  PCB(){
 }
 
 async function  genPCB(){
-    try {
+    //try {
         if (cy.elements().length>0 && !confirm("Схема на экране будет удалена, вы уверены?")){
             return;
         }
@@ -175,16 +176,20 @@ async function  genPCB(){
             const resp = await response.json();
             if (resp.resultCode==-1){
                 alert(resp.message)
+                document.getElementById("PCB").disabled = false
+                document.getElementById("genPCB").disabled = false;
+                document.getElementById("newPCB").disabled = false;
                 return;
             }
             const PCB = resp.entity;
-
+            console.log(PCB)
             let x = 0;
             for (let i = 0; i <PCB.modules.length;i++)
             {
                 cy.add([{group: 'nodes', data: {id: 'v' + (i + 1),
                         id1:'module',
-                        label:'v' + (i + 1) +' V='+PCB.modules[i].square}}])
+                        label:'v' + (i + 1) +' S='+PCB.modules[i].square+"\nCount="+PCB.modules[i].cnt,
+                        classes: 'multiline-manual'}}])
                 for (let j =0;j<PCB.modules[i].elements.length;j++)
                 {
                     var rand = Math.floor(Math.random() * el.length);
@@ -209,12 +214,12 @@ async function  genPCB(){
                     x+=1;
                 }
             }
-            for (let i =0; i<PCB.connectionsBeetwenModules.length;i++){
+            for (let i =0; i<PCB.connectionsBeetwenModules2.length;i++){
                 cy.add([{group: 'edges',
                     data: {
-                        source: 'v' + (PCB.connectionsBeetwenModules[i].module1.number+1),
-                        target: 'v' + (PCB.connectionsBeetwenModules[i].module2.number+1),
-                        label: PCB.connectionsBeetwenModules[i].value
+                        source: 'v' + (PCB.connectionsBeetwenModules2[i].module1.number+1),
+                        target: 'v' + (PCB.connectionsBeetwenModules2[i].module2.number+1),
+                        label: PCB.connectionsBeetwenModules2[i].value
                     }
                 }])
                 x+=1;
@@ -238,10 +243,10 @@ async function  genPCB(){
         else{
             alert("Ошибка при запросе")
         }
-    }
-    catch (ex){
-        alert("Неизвестная ошибка!")
-    }    
+    //}
+    //catch (ex){
+    //    alert("Неизвестная ошибка!")
+    //}    
     document.getElementById("PCB").disabled = false
     document.getElementById("genPCB").disabled = false;
     document.getElementById("newPCB").disabled = false;

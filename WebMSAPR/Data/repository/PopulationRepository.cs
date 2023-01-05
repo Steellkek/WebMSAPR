@@ -12,14 +12,13 @@ public class PopulationRepository
         {
             population.Genomes.Add(genomeRepo.CreateFirstGenome(pcb));
         }
-        population.SumFitness = population.Genomes.Sum(x => x.Fitness);
         return population;
     }
     
 
     private List<Genome> GetNewParents(Population population)
     {
-        population.Genomes= population.Genomes.OrderBy(x => x.Fitness).ToList();
+        population.Genomes= population.Genomes.OrderBy(x => x.Fitness).Reverse().ToList();
         Random ran = new Random();
         var Chances = new List<decimal>();
         var x = population.Genomes.Count * (population.Genomes.Count + 1) / 2;
@@ -55,31 +54,26 @@ public class PopulationRepository
     {
         var genomeRepo = new GenomeRepository();
         var bestGen = population.Genomes.OrderBy(x => x.Fitness).ToList()[0];
-        population.BestGenome = new BestGenome() {Modules = bestGen.Modules,Fitness = bestGen.Fitness};
-        population.BestGenome.ListBestGen.Add(population.BestGenome.Fitness);
-        population.BestGenome.ListSumFitnes.Add(population.SumFitness);
+        population.BestGenome = new Genome() {Modules = bestGen.Modules,Fitness = bestGen.Fitness};
         for (int i = 0; i < parametrsGenAlg.CountOfPopulation; i++)
         {
             population.NextGener= GetNewParents(population);
-            population=Crossingover(population,parametrsGenAlg.ChanсeCrosover);
+            population=Crossingover(population,parametrsGenAlg.ChanсeCrosover, genomeRepo);
+            population = Mutation(population,parametrsGenAlg.ChanсeMutation, genomeRepo);
             foreach (var genome in population.NextGener)
             {
-                genome.Fitness = genomeRepo.DetermineFitnes(genome.Modules);
+                genomeRepo.GetConnectionsInModules(genome);
+                genomeRepo.GetConnectionsBetweenModules(genome);
+                genomeRepo.CreateConnectionsBetweenModules(genome);
+                genome.Fitness = genomeRepo.DetermineFitnes(genome.ConnectionsBeetwenModules2);
             }
-            population = Mutation(population,parametrsGenAlg.ChanсeMutation);
-            foreach (var genome in population.Genomes)
-            {
-                genome.Fitness = genomeRepo.DetermineFitnes(genome.Modules);
-            }
-
             population.Genomes = Otbor(population.Genomes, population.NextGener);
-            population.SumFitness = population.Genomes.Sum(x => x.Fitness);
-            population.BestGenome.ListBestGen.Add(population.BestGenome.Fitness);
-            population.BestGenome.ListSumFitnes.Add(population.SumFitness);
-            if (population.BestGenome.Fitness<population.Genomes[0].Fitness)
+            if (population.BestGenome.Fitness>population.Genomes[0].Fitness)
             {
                 population.BestGenome.Fitness = population.Genomes[0].Fitness;
                 population.BestGenome.Modules = population.Genomes[0].Modules;
+                population.BestGenome.ConnectionsBeetwenModules2 = population.Genomes[0].ConnectionsBeetwenModules2;
+                population.BestGenome.ConnectionsBeetwenModules = population.Genomes[0].ConnectionsBeetwenModules;
             }
         }
         return population;
@@ -87,14 +81,13 @@ public class PopulationRepository
 
     private List<Genome> Otbor(List<Genome> genomes1, List<Genome> NextGener)
     {
-        var newList = genomes1.Concat(NextGener).OrderBy(x=>x.Fitness).Reverse().ToList();
+        var newList = genomes1.Concat(NextGener).OrderBy(x=>x.Fitness).ToList();
         return newList.GetRange(0,genomes1.Count);
     }
 
-    private Population Mutation(Population population,double chance)
+    private Population Mutation(Population population,double chance, GenomeRepository genomeRepo)
     {
         var rand = new Random();
-        var genomeRepo = new GenomeRepository();
         for (int i = 0; i < population.NextGener.Count; i ++)
         {
             var newChance = rand.NextDouble();
@@ -106,10 +99,9 @@ public class PopulationRepository
         return population;
     }
 
-    private Population Crossingover(Population population,double chance)
+    private Population Crossingover(Population population,double chance, GenomeRepository genomeRepo)
     {
         var rand = new Random();
-        var genomeRepo = new GenomeRepository();
         population.NextGener.Clear();
         for (int i = 0; i < population.Genomes.Count-1; i=i+2)
         {
