@@ -1,5 +1,5 @@
-var flagInput=0
-var numberOfInput = -1;
+var flagInputElement=0
+var flagInputModule=0
 var numberOfElement=1;
 cy = cytoscape({
 
@@ -30,8 +30,8 @@ cy = cytoscape({
         })
         .selector('node[id1="module"]')
         .css({
-            'height': 1,
-            'width': 1,
+            'height': 25,
+            'width': 25,
             'background-opacity': 1,
             'background-color': 'green',
             'text-wrap':"wrap"
@@ -118,21 +118,20 @@ async function  PCB(){
 }
 
 async function  genPCB(){
-    //try {
+    try {
         if (cy.elements().length>0 && !confirm("Схема на экране будет удалена, вы уверены?")){
             return;
         }
         if (!confirm("Будет запущен ген алгоритм со схемой из файла. Вы уверены?")){
             return;
         }
-        document.getElementById('inputsEdge').style.display = 'none';
-        document.getElementById('inputsSizes').style.display = 'none';
+        document.getElementById('inputsEdgeElement').style.display = 'none';
+        document.getElementById('inputsSizesElement').style.display = 'none';
         document.getElementById('saveScheme').style.display = 'none';
-        document.getElementById('inputsModule').style.display = 'none';
-        while (numberOfInput>-1){
-            delInput();
-        }
-        flagInput=0;
+        document.getElementById('inputsEdgeModule').style.display = 'none';
+        document.getElementById('inputsSizesModule').style.display = 'none';
+        flagInputElement=0;
+        flagInputModule=0;
         cy.off('tap')
         cy.off('cxttap')
         cy.remove(cy.elements())
@@ -151,7 +150,7 @@ async function  genPCB(){
                 }
             }
             if (this.id=="ChanсeCrosover"||this.id=="ChanсeMutation"){
-                if ($(this).val()>0 && $(this).val()<1){
+                if ($(this).val()>0 && $(this).val()<=1){
                     parameters[this.id]=$(this).val();
                 }
                 else{
@@ -166,6 +165,9 @@ async function  genPCB(){
         document.getElementById("PCB").disabled = true
         document.getElementById("genPCB").disabled = true;
         document.getElementById("newPCB").disabled = true;
+        document.getElementById("newModule").disabled = true;
+        document.getElementById("Module").disabled = true;
+
 
         const response = await fetch("/api/PCB/genPCB", {
             method: 'post',
@@ -188,16 +190,16 @@ async function  genPCB(){
             {
                 cy.add([{group: 'nodes', data: {id: 'v' + (i + 1),
                         id1:'module',
-                        label:'v' + (i + 1) +' S='+PCB.modules[i].square+"\nCount="+PCB.modules[i].cnt,
+                        label:'v' + (i + 1) +' S='+PCB.modules[i].square+"\nКол-во="+PCB.modules[i].cnt,
                         classes: 'multiline-manual'}}])
                 for (let j =0;j<PCB.modules[i].elements.length;j++)
                 {
                     var rand = Math.floor(Math.random() * el.length);
                     cy.add([{group: 'nodes',
-                        data: {id: 'g' + PCB.modules[i].elements[j].number,
+                        data: {id: 'g' + (PCB.modules[i].elements[j].number+1),
                             parent: 'v' + (i + 1),
                             id1:el[rand],
-                            label:'g' + PCB.modules[i].elements[j].number+' '+PCB.modules[i].elements[j].length+'×'+PCB.modules[i].elements[j].width,
+                            label:'g' + (PCB.modules[i].elements[j].number+1)+' '+PCB.modules[i].elements[j].length+'×'+PCB.modules[i].elements[j].width,
                             width:5*PCB.modules[i].elements[j].width,
                             height: 5*PCB.modules[i].elements[j].length}}])
                 }
@@ -206,24 +208,25 @@ async function  genPCB(){
                 {
                     cy.add([{group: 'edges',
                         data: {
-                            source: 'g' + PCB.modules[i].connectionsInModules[j]._element1.number,
-                            target: 'g' + PCB.modules[i].connectionsInModules[j]._element2.number,
+                            source: 'g' + (PCB.modules[i].connectionsInModules[j]._element1.number+1),
+                            target: 'g' + (PCB.modules[i].connectionsInModules[j]._element2.number+1),
                             label: PCB.modules[i].connectionsInModules[j]._value
                         }
                     }])
                     x+=1;
                 }
             }
-            for (let i =0; i<PCB.connectionsBeetwenModules2.length;i++){
+            for (let i =0; i<PCB.finalConnectionsBeetwenModules.length;i++){
                 cy.add([{group: 'edges',
                     data: {
-                        source: 'v' + (PCB.connectionsBeetwenModules2[i].module1.number+1),
-                        target: 'v' + (PCB.connectionsBeetwenModules2[i].module2.number+1),
-                        label: PCB.connectionsBeetwenModules2[i].value
+                        source: 'v' + (PCB.finalConnectionsBeetwenModules[i].module1.number+1),
+                        target: 'v' + (PCB.finalConnectionsBeetwenModules[i].module2.number+1),
+                        label: PCB.finalConnectionsBeetwenModules[i].value
                     }
                 }])
                 x+=1;
             }
+            document.getElementById("CF").innerText = PCB.fitness;
             var layout = cy.layout({
                 name: 'fcose',
                 quality: "default",
@@ -243,91 +246,98 @@ async function  genPCB(){
         else{
             alert("Ошибка при запросе")
         }
-    //}
-    //catch (ex){
-    //    alert("Неизвестная ошибка!")
-    //}    
+    }
+    catch (ex){
+        alert("Неизвестная ошибка!")
+    }    
     document.getElementById("PCB").disabled = false
     document.getElementById("genPCB").disabled = false;
     document.getElementById("newPCB").disabled = false;
+    document.getElementById("newModule").disabled = false;
+    document.getElementById("Module").disabled = false;
+}
+function getMatrixAndSizes(){
+    var nodes = cy.nodes();
+    var arrOfNodes = []
+    var arrOfSizes=[]
+    for (let i = 0; i < nodes.length; i++) {
+        arrOfNodes.push(nodes[i].data().id)
+        arrOfSizes.push([nodes[i].data().height/5,nodes[i].data().width/5])
+    }
+    if (arrOfNodes.length<2){
+        alert("Введите как минимум 2 элемента!")
+        return
+    }
+    var edges = cy.edges();
+    var matrix = new Array(arrOfNodes.length);
+    for (let i = 0; i < arrOfNodes.length; i++) {
+        matrix[i] = []
+    }
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix.length; j++) {
+            matrix[i].push('0')
+        }
+    }
+    for (let i = 0; i < edges.length; i++) {
+        var l = arrOfNodes.indexOf(edges[i].data().source)
+        var l1 = arrOfNodes.indexOf(edges[i].data().target)
+        matrix[l][l1] = String( edges[i].data().label);
+        matrix[l1][l] = String(edges[i].data().label);
+    }
+    var v= JSON.stringify({'Matrix':matrix,
+        'SizesElements':arrOfSizes,})
+    return v;
 }
 
+function getMatrixModuleAndSizes(){
+    var nodes = cy.nodes();
+    var arrOfNodes = []
+    var arrOfSizes=[]
+    var arrOfCnt=[]
+    for (let i = 0; i < nodes.length; i++) {
+        arrOfNodes.push(nodes[i].data().id)
+        arrOfSizes.push(nodes[i].data().square)
+        arrOfCnt.push(nodes[i].data().cnt)
+    }
+    if (arrOfNodes.length<2){
+        alert("Введите как минимум 2 модуля!")
+        return
+    }
+    var edges = cy.edges();
+    var matrix = new Array(arrOfNodes.length);
+    for (let i = 0; i < arrOfNodes.length; i++) {
+        matrix[i] = []
+    }
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix.length; j++) {
+            matrix[i].push('0')
+        }
+    }
+    for (let i = 0; i < edges.length; i++) {
+        var l = arrOfNodes.indexOf(edges[i].data().source)
+        var l1 = arrOfNodes.indexOf(edges[i].data().target)
+        matrix[l][l1] = String( '1');
+        matrix[l1][l] = String('1');
+    }
+    var v= JSON.stringify({'Matrix':matrix,
+        'CountElements':arrOfCnt,
+        'SizeModule':arrOfSizes})
+    return v;
+}
 async function saveScheme() {
     try {
         if (!confirm("Старая схема будет удалена из файла, вы уверены?")){
             return;
         }
-        var nodes = cy.nodes();
-        var arrOfNodes = []
-        var arrOfSizes=[]
-        for (let i = 0; i < nodes.length; i++) {
-            arrOfNodes.push(nodes[i].data().id)
-            arrOfSizes.push([nodes[i].data().height/5,nodes[i].data().width/5])
+        if (flagInputElement===1){
+            var v=getMatrixAndSizes()
+            var name = 'element'
         }
-        if (arrOfNodes.length<2){
-            alert("Введите как минимум 2 вершины!")
-            return
+        else if(flagInputModule===1){
+            var v =getMatrixModuleAndSizes();
+            var name = 'module'
         }
-        var edges = cy.edges();
-        var matrix = new Array(arrOfNodes.length);
-        for (let i = 0; i < arrOfNodes.length; i++) {
-            matrix[i] = []
-        }
-        for (let i = 0; i < matrix.length; i++) {
-            for (let j = 0; j < matrix.length; j++) {
-                matrix[i].push('0')
-            }
-        }
-        for (let i = 0; i < edges.length; i++) {
-            var l = arrOfNodes.indexOf(edges[i].data().source)
-            var l1 = arrOfNodes.indexOf(edges[i].data().target)
-            matrix[l][l1] = String( edges[i].data().label);
-            matrix[l1][l] = String(edges[i].data().label);
-        }
-        var $inputs = $('#profile :input');
-        if ($inputs.length<1){
-            alert("Нужно больше 1 модуля!")
-            return;
-        }
-        var valuesSizes = [];
-        var valuesCounts = [];
-        var check=true;
-        $inputs.each(function() {
-            if (this.className=="count"){
-                if ($(this).val()>0 && $(this).val()% 1 == 0){
-                    valuesCounts.push($(this).val());
-                }
-                else{
-                    alert("Вы ввели нецелое число или <0 или ничего в кол-ве")
-
-                    return check=false;
-                }
-            }
-
-            if (this.className=="square")
-            {
-                if ($(this).val()>-1){
-                    valuesSizes.push($(this).val()==0?String(2147483647):String($(this).val()));
-                }
-                else{
-                    alert("Вы ввели отрицательное число в площади")
-                    return check=false;
-                }
-            }
-        });
-        if (!check){
-            return
-        }
-        var sumCount = valuesCounts.reduce((partialSum, a) => partialSum + parseInt(a), 0);
-        if (sumCount!=arrOfNodes.length){
-            alert("Сумма кол-ва элементов в модулях не равна кол-ву элементов в схеме!")
-            return;
-        }
-        var v= JSON.stringify({'Matrix':matrix,
-            'SizesElements':arrOfSizes,
-            'CountElements':valuesCounts,
-            'SizeModule':valuesSizes})
-        const response = await fetch("/api/PCB/LoadMatrix", {
+        const response = await fetch("/api/PCB/LoadMatrix"+name, {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: v
@@ -357,24 +367,22 @@ function newPCB(){
         if (cy.elements().length>0 && !confirm("Схема на экране будет удалена, вы уверены?")){
             return;
         }
-        if (flagInput==0){
-            document.getElementById('inputsEdge').style.display = 'block';
-            document.getElementById('inputsSizes').style.display = 'block';
+        document.getElementById('inputsEdgeModule').style.display = 'none';
+        document.getElementById('inputsSizesModule').style.display = 'none';
+        document.getElementById('saveScheme').style.display = 'none';
+        if (flagInputElement==0){
+            document.getElementById('inputsEdgeElement').style.display = 'block';
+            document.getElementById('inputsSizesElement').style.display = 'block';
             document.getElementById('saveScheme').style.display = 'block';
-            document.getElementById('inputsModule').style.display = 'block';
-            flagInput=1;
+            flagInputElement=1;
             numberOfElement=1;
             cy.remove(cy.elements())
         }
         else{
-            document.getElementById('inputsEdge').style.display = 'none';
-            document.getElementById('inputsSizes').style.display = 'none';
+            document.getElementById('inputsEdgeElement').style.display = 'none';
+            document.getElementById('inputsSizesElement').style.display = 'none';
             document.getElementById('saveScheme').style.display = 'none';
-            document.getElementById('inputsModule').style.display = 'none';
-            while (numberOfInput>-1){
-                delInput();
-            }
-            flagInput=0;
+            flagInputElement=0;
             cy.off('tap')
             cy.off('cxttap')
             cy.remove(cy.elements())
@@ -382,12 +390,12 @@ function newPCB(){
             return true;
         }
 
-        cy.zoom({                       // Zoom to the specified position
+        cy.zoom({                       
             level: 1
         });
 
         cy.on('tap', function( evt ){
-            var tgt = evt.target || evt.cyTarget; // 3.x || 2.x
+            var tgt = evt.target || evt.cyTarget; 
 
             if( tgt === cy ){
                 var rand = Math.floor(Math.random() * (el.length));
@@ -420,7 +428,6 @@ function newPCB(){
             tgt.remove();
         })
 
-        var x=0;
         document.querySelector('#start').addEventListener('click', function() {
             try {
                 if ((document.getElementById('source').value>0) &&
@@ -447,14 +454,13 @@ function newPCB(){
                             return;
                         }
                     }
-                    x += 1;
                 }
                 else{
                     alert("Вы ввели не число или пустоту!")
                 }
             }
             catch (ex)  {
-                alert("Таких вершин нет!")
+                alert("Таких элементов нет!")
             }
         });
 
@@ -475,7 +481,7 @@ function newPCB(){
                 }
             }
             catch (ex){
-                alert("Такой вершины нет!")
+                alert("Такого элемента нет!")
             }
 
         });
@@ -485,20 +491,179 @@ function newPCB(){
     }         
 }
 
-function addInput() {
-    var profile = document.getElementById('profile');
-    var div = document.createElement('div');
-    div.id = 'input' + (++numberOfInput);    
-    div.innerHTML = '<input type="number" class="count" placeholder="Кол-во эл" min="0"> <input type="number" class="square" placeholder="Площадь" min="0">';
-    profile.appendChild(div);
+
+async function Module() {
+    try {
+
+
+        if (newModule()) {
+            return;
+        }
+
+        const response = await fetch("/api/PCB/Module", {
+            method: "GET",
+            headers: {"Accept": "application/json"}
+        });
+        if (response.ok) {
+            const resp = await response.json();
+            if (resp.resultCode == -1) {
+                alert(resp.message)
+                return
+            }
+            var modules = resp.entity.item1;
+            var conections = resp.entity.item2;
+            console.log(conections)
+            for (let i = 0; i < modules.length; i++) {
+                cy.add({
+                    group: 'nodes',
+                    data: {
+                        id: 'v' + (i + 1),
+                        id1: 'module',
+                        label: 'v' + (i + 1) + ' S=' + modules[i].square + "\nКол-во=" + modules[i].cnt,
+                        cnt: modules[i].cnt,
+                        square: modules[i].square,
+                        classes: 'multiline-manual',
+                    }
+                })
+                numberOfElement += 1;
+            }
+            for (let i = 0; i < conections.length; i++) {
+                cy.add([{
+                    group: 'edges',
+                    data: {
+                        source: 'v' + (conections[i].module1.number + 1),
+                        target: 'v' + (conections[i].module2.number + 1),
+                        label: ""
+                    }
+                }])
+            }
+            cy.layout({name: 'circle'}).run();
+            cy.layout({name: 'circle'}).stop();
+        }
+    }
+    catch (e){
+        alert("Неизвестная ошибка!")
+    }
 }
 
-function delInput() {
-    if (numberOfInput==-1){
-        return
+function newModule(){
+    try {
+
+
+        if (cy.elements().length > 0 && !confirm("Схема на экране будет удалена, вы уверены?")) {
+            return;
+        }
+        document.getElementById('inputsEdgeElement').style.display = 'none';
+        document.getElementById('inputsSizesElement').style.display = 'none';
+        document.getElementById('saveScheme').style.display = 'none';
+        if (flagInputModule == 0) {
+            document.getElementById('inputsEdgeModule').style.display = 'block';
+            document.getElementById('inputsSizesModule').style.display = 'block';
+            document.getElementById('saveScheme').style.display = 'block';
+            flagInputModule = 1;
+            numberOfElement = 1;
+            cy.remove(cy.elements())
+        } else {
+            document.getElementById('inputsEdgeModule').style.display = 'none';
+            document.getElementById('inputsSizesModule').style.display = 'none';
+            document.getElementById('saveScheme').style.display = 'none';
+            flagInputModule = 0;
+            cy.off('tap')
+            cy.off('cxttap')
+            cy.remove(cy.elements())
+            numberOfElement = 1;
+            return true;
+        }
+
+
+        cy.on('tap', function (evt) {
+            var tgt = evt.target || evt.cyTarget;
+
+            if (tgt === cy) {
+                cy.add({
+                    group: 'nodes',
+                    data: {
+                        id: 'v' + numberOfElement,
+                        id1: 'module',
+                        label: 'v' + numberOfElement + ' S=' + 2147483647 + "\nКол-во=" + 1,
+                        cnt: 1,
+                        square: 1231234,
+                        classes: 'multiline-manual',
+                    },
+                    position: {
+                        x: evt.position.x,
+                        y: evt.position.y
+                    }
+                });
+
+            }
+            numberOfElement += 1;
+        });
+
+        cy.on('cxttap', 'node', function (evt) {
+            var tgt = evt.target || evt.cyTarget;
+            tgt.remove();
+        })
+
+        cy.on('cxttap', 'edge', function (evt) {
+            var tgt = evt.target || evt.cyTarget;
+            tgt.remove();
+        })
+
+        document.querySelector('#startModule').addEventListener('click', function () {
+            try {
+                if ((document.getElementById('sourceModule').value > 0) &&
+                    (document.getElementById('targetModule').value > 0)) {
+                    cy.add([{
+                        group: 'edges',
+                        data: {
+                            source: 'v' + document.getElementById('sourceModule').value,
+                            target: 'v' + document.getElementById('targetModule').value,
+                            label: ""
+                        }
+                    }])
+                    var edge = cy.elements()[cy.elements().length - 1]
+                    var dataEdge = edge.data();
+                    edges = cy.edges()
+                    for (let j = 0; j < edges.length - 1; j++) {
+                        var data1 = edges[j].data()
+                        if ((data1.source == dataEdge.source && data1.target == dataEdge.target) ||
+                            (data1.source == dataEdge.target && data1.target == dataEdge.source)) {
+                            cy.remove(edge)
+                            alert("Между этими элементами уже есть соединение! Удалите его и создайте заново")
+                            return;
+                        }
+                    }
+                } else {
+                    alert("Вы ввели не число или пустоту!")
+                }
+            } catch (ex) {
+                alert("Таких вершин нет!")
+            }
+        });
+
+        document.querySelector('#SetSizeModule').addEventListener('click', function () {
+            try {
+                if ((document.getElementById('numberModule').value >= 0) &&
+                    (document.getElementById('squareModule').value >= 0) &&
+                    (document.getElementById('cntModule').value > 0)) {
+                    var id = document.getElementById('numberModule').value;
+                    var square = document.getElementById('squareModule').value == 0 ? 2147483647 : document.getElementById('squareModule').value
+                    var cnt = document.getElementById('cntModule').value
+                    cy.nodes(`[id="v${id}"]`).data('square', square)
+                    cy.nodes(`[id="v${id}"]`).data('cnt', cnt)
+                    cy.nodes(`[id="v${id}"]`).data('label', 'v' + id + ' S=' + square + "\nCount=" + cnt)
+                } else {
+                    alert("Вы ввели не число или пустоту!")
+                }
+            } catch (ex) {
+                alert("Такого модуля нет!")
+            }
+
+        });
     }
-    var div = document.getElementById('input' + numberOfInput);
-    div.remove();
-    --numberOfInput;
+    catch (e){
+        alert("Неизвестная ошибка!")
+    }
 }
 

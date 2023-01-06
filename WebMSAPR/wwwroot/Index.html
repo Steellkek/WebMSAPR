@@ -68,18 +68,30 @@
             <button id="PCB" onclick="PCB()" >Загрузить схему</button>
             <button id="genPCB" onclick="genPCB()">Запустить генетический алгоритм</button>
             <button id="newPCB" onclick="newPCB()">Создать новую схему</button>
-            <button id="newModule" onclick="newModule()">Создать новую схему и разрез</button>
-            <span id='inputsEdge' style="display: none;">
+            <button id="Module" onclick="Module()">Загрузить схему соединений модулей</button>
+            <button id="newModule" onclick="newModule()">Создать новую схему соединений модулей</button>
+            <span id='inputsEdgeElement' style="display: none;">
                 <button id="start">Соединить элементы</button>
                 <input id="source" type="number" placeholder="введите номер 1 элемента" style="width: 220px;" min="0">
                 <input id="target" type="number" placeholder="введите номер 2 элемента" style="width: 220px;" min="0">
                 <input id="number" type="number" placeholder="Введите кол-во соединений" style="width: 230px;" min="0">
             </span>
-            <span id='inputsSizes' style="display: none;">
+            <span id='inputsSizesElement' style="display: none;">
                 <button id="SetSize">Изменить размер элемента</button>
                 <input id="element" type="number" placeholder="введите номер элемента" style="width: 205px;" min="0">
                 <input id="length" type="number" placeholder="введите длину" style="width: 150px;" min="0">
                 <input id="width" type="number" placeholder="Введите ширину" style="width: 150px;" min="0">
+            </span>
+            <span id='inputsEdgeModule' style="display: none;">
+                <button id="startModule">Соединить модули</button>
+                <input id="sourceModule" type="number" placeholder="введите номер 1 модуля" style="width: 220px;" min="0">
+                <input id="targetModule" type="number" placeholder="введите номер 2 модуля" style="width: 220px;" min="0">
+            </span>
+            <span id='inputsSizesModule' style="display: none;">
+                <button id="SetSizeModule">Изменить размер элемента</button>
+                <input id="numberModule" type="number" placeholder="введите номер модуля" style="width: 205px;" min="0">
+                <input id="squareModule" type="number" placeholder="введите площадь модуля" style="width: 150px;" min="0">
+                <input id="cntModule" type="number" placeholder="Введите кол-во элементов в модуле" style="width: 150px;" min="0">
             </span>
         </div>
         
@@ -91,41 +103,27 @@
                 <div class="grid" id ="parameters">
                     <div class="g-col-4">
                         <p>Количество особей в популяции:</p>
-                        <input id="CountOfGenome" type="number" style="width: 100px;" min="0" >
+                        <input id="CountOfGenome" type="number" style="width: 100px;" min="0" value=10>
                     </div>
                     <div class="g-col-4">
                         <p>Количество популяций:</p>
-                        <input id="CountOfPopulation" type="number" style="width: 100px;" min="0">
+                        <input id="CountOfPopulation" type="number" style="width: 100px;" min="0" value=100>
                     </div>
                     <div class="g-col-4">
                         <p>Шанс для кроссинговера:</p>
-                        <input id="ChanсeCrosover" type="number" style="width: 100px;" min="0">                        
+                        <input id="ChanсeCrosover" type="number" style="width: 100px;" min="0" value=0.95>                        
                     </div>
                     <div class="g-col-4">
                         <p>Шанс для мутации:</p>
-                        <input id="ChanсeMutation" type="number" style="width: 100px;" min="0">                        
+                        <input id="ChanсeMutation" type="number" style="width: 100px;" min="0" value=0.1>                        
                     </div>
                     <div class="g-col-4">
-                        <p>Нужный разрез:</p>
-                        <font color="#8a2be2"><p id="NeedSplit"></p></font>
-                    </div>
-                    <div class="g-col-4">
-                        <p>Полученный разрез:</p>
-                        <font color="#8a2be2"><p id="Split"></p></font>
-                    </div>
-                    <div class="g-col-4">
-                        <p>ЦФ для разреза:</p>
+                        <p>ЦФ для компоновки:</p>
                         <font color="#8a2be2"><p id="CF"></p></font>
                     </div>
                 </div>
             </div>
         </div>
-        <form id="inputsModule" style="display: none;">
-            <div id="profile">
-            </div>
-            <div class="counter" onclick="addInput()">+</div>
-            <div class="counter" onclick="delInput()">-</div>
-        </form>
         <button id="saveScheme"  style="display: none;" onclick="saveScheme()" >Сохранить Схему</button>
     </div>
    

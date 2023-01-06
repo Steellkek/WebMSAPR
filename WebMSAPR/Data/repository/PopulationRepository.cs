@@ -54,7 +54,9 @@ public class PopulationRepository
     {
         var genomeRepo = new GenomeRepository();
         var bestGen = population.Genomes.OrderBy(x => x.Fitness).ToList()[0];
-        population.BestGenome = new Genome() {Modules = bestGen.Modules,Fitness = bestGen.Fitness};
+        population.listFitness.Add(bestGen.Fitness);
+        population.BestGenome = new Genome() {Modules = bestGen.Modules,Fitness = bestGen.Fitness,
+            FinalConnectionsBeetwenModules=bestGen.FinalConnectionsBeetwenModules, DirectConnectionsBeetwenModules=bestGen.DirectConnectionsBeetwenModules };
         for (int i = 0; i < parametrsGenAlg.CountOfPopulation; i++)
         {
             population.NextGener= GetNewParents(population);
@@ -65,15 +67,16 @@ public class PopulationRepository
                 genomeRepo.GetConnectionsInModules(genome);
                 genomeRepo.GetConnectionsBetweenModules(genome);
                 genomeRepo.CreateConnectionsBetweenModules(genome);
-                genome.Fitness = genomeRepo.DetermineFitnes(genome.ConnectionsBeetwenModules2);
+                genome.Fitness = genomeRepo.DetermineFitnes(genome.FinalConnectionsBeetwenModules);
             }
             population.Genomes = Otbor(population.Genomes, population.NextGener);
+            population.listFitness.Add(population.Genomes[0].Fitness);
             if (population.BestGenome.Fitness>population.Genomes[0].Fitness)
             {
                 population.BestGenome.Fitness = population.Genomes[0].Fitness;
                 population.BestGenome.Modules = population.Genomes[0].Modules;
-                population.BestGenome.ConnectionsBeetwenModules2 = population.Genomes[0].ConnectionsBeetwenModules2;
-                population.BestGenome.ConnectionsBeetwenModules = population.Genomes[0].ConnectionsBeetwenModules;
+                population.BestGenome.FinalConnectionsBeetwenModules = population.Genomes[0].FinalConnectionsBeetwenModules;
+                population.BestGenome.DirectConnectionsBeetwenModules = population.Genomes[0].DirectConnectionsBeetwenModules;
             }
         }
         return population;

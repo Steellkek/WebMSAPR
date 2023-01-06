@@ -32,7 +32,7 @@ public class GenomeRepository
         GetConnectionsInModules(genome);
         GetConnectionsBetweenModules(genome);
         CreateConnectionsBetweenModules(genome);
-        genome.Fitness = DetermineFitnes(genome.ConnectionsBeetwenModules2);
+        genome.Fitness = DetermineFitnes(genome.FinalConnectionsBeetwenModules);
         return genome;
     }
 
@@ -58,8 +58,7 @@ public class GenomeRepository
     public List<int> MinPath1(int end, int start, List<int> paths)
     {
         List<int> listOfpoints = new List<int>();
-        int tempp = new int();
-        tempp = end;
+        var tempp = end;
         while (tempp != start)
         {
             listOfpoints.Add(tempp);
@@ -71,7 +70,7 @@ public class GenomeRepository
 
     public void CreateConnectionsBetweenModules(Genome genome)
     {
-        genome.ConnectionsBeetwenModules2.Clear();
+        genome.FinalConnectionsBeetwenModules.Clear();
         List<ConnectionsModule> connections = new List<ConnectionsModule>();
         for (int i = 0; i < Matrix.Count; i++)
         {
@@ -88,19 +87,19 @@ public class GenomeRepository
             }
             
         }
-        genome.ConnectionsBeetwenModules2 = connections;
+        genome.FinalConnectionsBeetwenModules = connections;
         for (int i = 0; i < MinPathToModule.Count; i++)
         {
-            var con2 =genome.ConnectionsBeetwenModules.Where(x => (x.Module1.Number == MinPathToModule[i].FirstOrDefault() &&
-                                                                   x.Module2.Number == MinPathToModule[i].LastOrDefault())||
-                                                                  (x.Module2.Number == MinPathToModule[i].FirstOrDefault() &&
-                                                                   x.Module1.Number == MinPathToModule[i].LastOrDefault())).FirstOrDefault();
+            var con2 =genome.DirectConnectionsBeetwenModules.Where(x => (x.Module1.Number == MinPathToModule[i].FirstOrDefault() &&
+                                                                         x.Module2.Number == MinPathToModule[i].LastOrDefault())||
+                                                                        (x.Module2.Number == MinPathToModule[i].FirstOrDefault() &&
+                                                                         x.Module1.Number == MinPathToModule[i].LastOrDefault())).FirstOrDefault();
             for (int j = 0; j < MinPathToModule[i].Count-1; j++)
             {
-                var con =genome.ConnectionsBeetwenModules2.Where(x => (x.Module1.Number == MinPathToModule[i][j] &&
-                                                                       x.Module2.Number == MinPathToModule[i][j+1])||
-                                                                      (x.Module2.Number == MinPathToModule[i][j] &&
-                                                                       x.Module1.Number == MinPathToModule[i][j+1])).FirstOrDefault();
+                var con =genome.FinalConnectionsBeetwenModules.Where(x => (x.Module1.Number == MinPathToModule[i][j] &&
+                                                                           x.Module2.Number == MinPathToModule[i][j+1])||
+                                                                          (x.Module2.Number == MinPathToModule[i][j] &&
+                                                                           x.Module1.Number == MinPathToModule[i][j+1])).FirstOrDefault();
                 
                 if (con2 != null)
                 {
@@ -169,7 +168,7 @@ public class GenomeRepository
 
     public void GetConnectionsBetweenModules(Genome genome)
     {
-        genome.ConnectionsBeetwenModules.Clear();
+        genome.DirectConnectionsBeetwenModules.Clear();
         for (int i = 0; i < genome.Modules.Count; i++)
         {
             foreach (var element in genome.Modules[i].Elements)
@@ -179,25 +178,25 @@ public class GenomeRepository
                     if (!genome.Modules[i].Elements.Contains(tuple.Item1))
                     {
                         var module2 = genome.Modules.Where(x => x.Elements.Contains(tuple.Item1)).FirstOrDefault();
-                        if (!(genome.ConnectionsBeetwenModules.Where(x =>
+                        if (!(genome.DirectConnectionsBeetwenModules.Where(x =>
                                 (x.Module1 == genome.Modules[i] || x.Module1 == module2) &&
                                 (x.Module2 == genome.Modules[i] || x.Module2 == module2)).ToList().Count > 0))
                         {
-                            genome.ConnectionsBeetwenModules.Add(new ConnectionsModule(){Module1 = genome.Modules[i],
+                            genome.DirectConnectionsBeetwenModules.Add(new ConnectionsModule(){Module1 = genome.Modules[i],
                                 Module2 = genome.Modules.Where(x => x.Elements.Contains(tuple.Item1)).FirstOrDefault(),
                                 value = tuple.Item2});
-                            genome.ConnectionsBeetwenModules.LastOrDefault().Connections.Add(new ConnectionElement(element,tuple.Item1,tuple.Item2));
+                            genome.DirectConnectionsBeetwenModules.LastOrDefault().Connections.Add(new ConnectionElement(element,tuple.Item1,tuple.Item2));
                         }
-                        else if (!CheckInConnections(genome.ConnectionsBeetwenModules.Where(x=>
+                        else if (!CheckInConnections(genome.DirectConnectionsBeetwenModules.Where(x=>
                                      (x.Module1 == genome.Modules[i] || x.Module1 == module2)&&
                                      (x.Module2 == genome.Modules[i] || x.Module2 == module2)).FirstOrDefault().Connections,element,tuple.Item1,tuple.Item2))
                         {
-                            genome.ConnectionsBeetwenModules.Where(x =>
+                            genome.DirectConnectionsBeetwenModules.Where(x =>
                                     (x.Module1 == genome.Modules[i] || x.Module1 == module2) &&
                                     (x.Module2 == genome.Modules[i] || x.Module2 == module2))
                                 .FirstOrDefault()
                                 .value += tuple.Item2;
-                            genome.ConnectionsBeetwenModules.Where(x =>
+                            genome.DirectConnectionsBeetwenModules.Where(x =>
                                     (x.Module1 == genome.Modules[i] || x.Module1 == module2) &&
                                     (x.Module2 == genome.Modules[i] || x.Module2 == module2))
                                 .FirstOrDefault().Connections.Add(new ConnectionElement(element,tuple.Item1,tuple.Item2));
@@ -257,7 +256,7 @@ public class GenomeRepository
                         module.Elements.Add(list1[j]);
                         j += 1;
                     }
-                    else if ((list2[i].Squre + module.Elements.Sum(x => x.Squre) < module.Square) &&
+                    else if ((list2[i].Squre + module.Elements.Sum(x => x.Squre) <= module.Square) &&
                              (!ExistInModule(child, list2[i])))
                     {
                         module.Elements.Add(list2[i]);
@@ -278,7 +277,7 @@ public class GenomeRepository
                 {
                     for (int i = 0; i < list2.Count && module.Cnt > module.Elements.Count; i++)
                     {
-                        if ((list2[i].Squre + module.Elements.Sum(x => x.Squre) < module.Square) &&
+                        if ((list2[i].Squre + module.Elements.Sum(x => x.Squre) <= module.Square) &&
                             (!ExistInModule(child, list2[i])))
                         {
                             module.Elements.Add(list2[i]);
@@ -315,8 +314,8 @@ public class GenomeRepository
     {
 
         Random ran = new();
-        int position1=0;
-        int position2=0;
+        int position1;
+        int position2;
 
         var list = GetElementsFromModule(genome.Modules);
         var listTuple = new List<Tuple<int, int>>();
@@ -347,9 +346,12 @@ public class GenomeRepository
             {
                 for (int i = 0; i < list.Count && module.Cnt > module.Elements.Count; i++)
                 {
-                    module.Elements.Add(list[i]);
-                    list.Remove(list[i]);
-                    i--;
+                    if ((list[i].Squre + module.Elements.Sum(x => x.Squre) <= module.Square))
+                    {
+                        module.Elements.Add(list[i]);
+                        list.Remove(list[i]);
+                        i--;
+                    }
                 }
             }
             if (mutatationModule.Sum(x=>x.Elements.Count)!=genome.Modules.Sum(x=>x.Cnt))

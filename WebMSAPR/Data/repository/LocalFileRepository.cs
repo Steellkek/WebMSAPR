@@ -150,7 +150,7 @@ public class LocalFileRepository
             throw new Exception("Файл поврежден: "+e.Message);
         }
     }
-    public void WriteMatixSizes(List<List<string>> matrix, List<List<string>> listSizeElements, List<int> listCountElement, List<string> listSizeModule)
+    public void WriteMatixSizesElement(List<List<string>> matrix, List<List<string>> listSizeElements)
     {
 
         try
@@ -196,7 +196,33 @@ public class LocalFileRepository
                     }
                 }
             }
+            xDoc.Save("Files/File.xml");
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Файл поврежден!");
+        }
+    }
+    
+    public void WriteMatixSizesModule(List<List<string>> matrix, List<int> listCountElement, List<string> listSizeModule)
+    {
 
+        try
+        {
+            string strMatrix = "";
+            for (int i = 0; i < matrix.Count; i++)
+            {
+                for (int j = 0; j < matrix.Count; j++)
+                {
+                    strMatrix += matrix[i][j] + " ";
+                }
+                strMatrix += "\n";
+            }
+
+            string sizeElements = "";
+
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.Load("Files/File.xml");
             var split = string.Join(" ",listCountElement);
             var xNode = xDoc.SelectSingleNode("root/split");
             xNode.InnerText = split;
@@ -205,12 +231,14 @@ public class LocalFileRepository
             xNode = xDoc.SelectSingleNode("root/sizeSplit");
             xNode.InnerText = sisezModule;
             xDoc.Save("Files/File.xml");
+            xNode=xDoc.SelectSingleNode("root/matrixModules");
+            xNode.InnerText = strMatrix;
+            xDoc.Save("Files/File.xml");
         }
         catch (Exception e)
         {
             throw new Exception("Файл поврежден!");
         }
     }
-
 
 }
