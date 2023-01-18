@@ -4,11 +4,11 @@ namespace WebMSAPR.repository;
 
 public class PopulationRepository
 {
-    public Population CreateFirstPopulation(int k, PCB pcb)
+    public Population CreateFirstPopulation(int g, PCB pcb)
     {
         var genomeRepo = new GenomeRepository();
         Population population = new Population();
-        for (int i = 0; i < k; i++)
+        for (int i = 0; i < g; i++)
         {
             population.Genomes.Add(genomeRepo.CreateFirstGenome(pcb));
         }

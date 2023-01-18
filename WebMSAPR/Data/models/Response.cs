@@ -2,5 +2,5 @@
 
 public class Response<T>:BaseResponse
 {
-    public T entity;
+    public T entity { get; set; }
 }

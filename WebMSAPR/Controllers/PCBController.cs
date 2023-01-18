@@ -102,22 +102,22 @@ public class PCBController : Controller
     
     public class MatrixAndSizesElement
     {
-        public List<List<string>> Matrix;
-        public List<List<string>> SizesElements;
+        public List<List<string>> Matrix { get; set; }
+        public List<List<string>> SizesElements{ get; set; }
     }
     
     public class MatrixAndSizesModule
     {
-        public List<List<string>> Matrix;
-        public List<int> CountElements;
-        public List<string> SizeModule;
+        public List<List<string>> Matrix { get; set; }
+        public List<int> CountElements { get; set; }
+        public List<string> SizeModule { get; set; }
     }
 
     public class ParametrsGenAlg
     {
-        public int CountOfGenome;
-        public int CountOfPopulation;
-        public double ChanсeCrosover;
-        public double ChanсeMutation;
+        public int CountOfGenome { get; set; }
+        public int CountOfPopulation { get; set; }
+        public double ChanсeCrosover { get; set; }
+        public double ChanсeMutation { get; set; }
     }
 }

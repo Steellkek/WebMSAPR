@@ -5,8 +5,12 @@ public class PCBRepository
     public PCB CreatePCB()
     {
         var localFileRepository = new LocalFileRepository();
-        var matrix = localFileRepository.ReadGraph();
+        var matrix = localFileRepository.ReadPCB();
         var sizeElements = localFileRepository.ReadSizeElements();
+        if (matrix.Count!=sizeElements.Count)
+        {
+            throw new Exception("Количество элементов и количество габаритов не одинаковое!");
+        }
         var pcb = new PCB();
         pcb.Elements = CreateElements(sizeElements);
         pcb.Connections = CreateConnections(pcb.Elements, matrix);

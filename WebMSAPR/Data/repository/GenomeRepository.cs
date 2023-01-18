@@ -13,13 +13,13 @@ public class GenomeRepository
         Matrix = matrix;
         for (int i = 0; i < matrix.Count; i++)
         {
-            var t = DijkstraAlgo(matrix, i, matrix.Count);
-            for (int j = i; j < t.Count; j++)
+            var rast = DijkstraAlgo(matrix, i, matrix.Count);
+            for (int j = i; j < rast.Count; j++)
             {
                 if (i != j)
                 {
-                    var k = MinPath1(j, i, t).AsEnumerable().Reverse().ToList();
-                    MinPathToModule.Add(k);
+                    var MinPath = MinPath1(j, i, rast).AsEnumerable().Reverse().ToList();
+                    MinPathToModule.Add(MinPath);
                 }
             }
         }
@@ -51,11 +51,10 @@ public class GenomeRepository
                     }
                 }
             }
-
-            var b = 5;
         }
     }
-    public List<int> MinPath1(int end, int start, List<int> paths)
+
+    private List<int> MinPath1(int end, int start, List<int> paths)
     {
         List<int> listOfpoints = new List<int>();
         var tempp = end;
@@ -133,10 +132,10 @@ public class GenomeRepository
     {
         int[] distance = new int[verticesCount];
         bool[] shortestPathTreeSet = new bool[verticesCount];
-        List<int> x = new();
+        List<int> vert = new();
         for (int i = 0; i < verticesCount; i++)
         {
-            x.Add(source);
+            vert.Add(source);
         }
 
         for (int i = 0; i < verticesCount; ++i)
@@ -158,12 +157,12 @@ public class GenomeRepository
                     distance[u] + graph[u][v] < distance[v])
                 {
                     distance[v] = distance[u] + graph[u][v];
-                    x[v] = u;
+                    vert[v] = u;
                 }
             }
         }
 
-        return x;
+        return vert;
     }
 
     public void GetConnectionsBetweenModules(Genome genome)
@@ -424,33 +423,5 @@ public class GenomeRepository
     public decimal DetermineFitnes(List<ConnectionsModule> connectionsModules)
     {
         return connectionsModules.Sum(x => x.value);
-        /*decimal F = 0;
-        decimal K = 0;
-        foreach (var module in modules)
-        {
-            foreach (var element in module.Elements)
-            {
-                foreach (var adjElement in element.AdjElement)
-                {
-                    if (!module.Elements.Contains(adjElement.Item1))
-                    {
-                        F += adjElement.Item2;
-                    }
-                    if (module.Elements.Contains(adjElement.Item1))
-                    {
-                        K += adjElement.Item2;
-                    }
-                }
-            }
-        }
-
-        if (F==0)
-        {
-            throw new Exception("Один из геномов имеет 0 связей между модулями");
-        }
-        return  K/F;*/
     }
-
-
-    
 }

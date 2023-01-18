@@ -28,11 +28,11 @@ public class ModuleRepository
             throw new Exception("Суммарное количество элементов в модулях не совпадает с количествеом элементов в схеме!");
         }
         Random rand = new Random();
-        var x = 0;
-        var g = 0;
-        while (x!=1 && g<2000)
+        var check = 0;
+        var cnt = 0;
+        while (check!=1 && cnt<2000)
         {
-            g += 1;
+            cnt += 1;
             List<Element> list = pcb.Elements.GetRange(0, pcb.Elements.Count);
             for (int i = list.Count - 1; i >= 1; i--)
             {
@@ -54,19 +54,19 @@ public class ModuleRepository
 
                 if (module.Cnt>module.Elements.Count)
                 {
-                    x = 0;
+                    check = 0;
                     break;
                 }
                 else
                 {
-                    x = 1;
+                    check = 1;
                 }
 
             }
 
         }
 
-        if (g==2000)
+        if (cnt==2000)
         {
             throw new Exception("Данная компоновка невозможна, попробуйте изменить размеры модулей или элементов.");
         }

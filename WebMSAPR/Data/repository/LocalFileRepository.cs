@@ -5,8 +5,7 @@ namespace WebMSAPR.repository;
 public class LocalFileRepository
 {
     private string FileWay = "Files/File.xml";
-    private string ResultWay = "Files/Result.xml";
-    public List<List<int>> ReadGraph()
+    public List<List<int>> ReadPCB()
     {
         try
         {
@@ -56,7 +55,6 @@ public class LocalFileRepository
         try
         {
             List<List<decimal>> sizes = new();
-            int length=1;
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(FileWay);
             var xRoot = xDoc.SelectSingleNode("root/graph");
@@ -129,7 +127,6 @@ public class LocalFileRepository
         try
         {
             List<List<int>> matrix = new();
-            int length=1;
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(FileWay);
             var xRoot = xDoc.SelectSingleNode("root/matrixModules");
